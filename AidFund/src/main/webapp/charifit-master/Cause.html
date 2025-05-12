@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="css/style.css">
     <!-- <link rel="stylesheet" href="css/responsive.css"> -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
       body {
         background: #f6f8fb;
@@ -34,8 +35,8 @@
       .user-topbar {
         width: 100%;
         height: 64px;
-        background: #fff;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        background: linear-gradient(90deg, #f8fafc 0%, #e9ecef 100%);
+        box-shadow: 0 4px 24px rgba(108,99,255,0.08);
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -56,21 +57,47 @@
       .user-topbar .brand .plus { color: #a51d23; }
       .user-topbar nav {
         display: flex;
-        gap: 24px;
+        gap: 20px;
         align-items: center;
       }
       .user-topbar nav a {
+        display: flex;
+        align-items: center;
+        gap: 8px;
         color: #555;
         text-decoration: none;
         font-size: 1.1rem;
         font-weight: 600;
-        padding: 8px 16px;
-        border-radius: 8px;
-        transition: background 0.2s, color 0.2s;
+        padding: 8px 18px;
+        border-radius: 10px;
+        background: transparent;
+        transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
+        box-shadow: none;
       }
       .user-topbar nav a.active, .user-topbar nav a:hover {
-        background: #e6e9f0;
-        color: #4b49ac;
+        background: #ecebfc;
+        color: #6C63FF;
+        box-shadow: 0 2px 8px rgba(108,99,255,0.08);
+      }
+      .user-topbar nav .admin-login-btn {
+        margin-left: 24px;
+        background: #6C63FF;
+        color: #fff;
+        font-weight: 700;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(108,99,255,0.18);
+        transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
+        font-size: 1.1rem;
+      }
+      .user-topbar nav .admin-login-btn:hover {
+        background: #554ee2;
+        color: #fff;
+        box-shadow: 0 4px 16px rgba(108,99,255,0.22);
+        transform: scale(1.05);
+      }
+      .user-topbar nav .lucide {
+        width: 20px;
+        height: 20px;
       }
       .user-topbar .profile {
         display: flex;
@@ -111,14 +138,17 @@
     <div class="user-topbar">
       <div class="brand">AidFund<span class="plus">+</span></div>
       <nav>
-        <a href="index.html">Home</a>
-        <a href="About.html">About</a>
-        <a href="blog.html">Blog</a>
-        <a href="Cause.html" class="active">Causes</a>
-        <a href="contact.html">Contact</a>
-        <a href="admin-login.html" class="admin-login-btn">Login as Admin</a>
+        <a href="index.html"><i data-lucide="home"></i>Home</a>
+        <a href="About.html"><i data-lucide="info"></i>About</a>
+        <a href="blog.html"><i data-lucide="book-open"></i>Blog</a>
+        <a href="Cause.html" class="active"><i data-lucide="heart"></i>Causes</a>
+        <a href="contact.html"><i data-lucide="mail"></i>Contact</a>
+        <a href="admin-login.html" class="admin-login-btn"><i data-lucide="user-shield"></i>Login as Admin</a>
       </nav>
     </div>
+    <script>
+      lucide.createIcons();
+    </script>
     <div class="main-content-user">
     <!-- bradcam_area_start  -->
     <div class="bradcam_area breadcam_bg overlay d-flex align-items-center justify-content-center">

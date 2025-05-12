@@ -26,6 +26,8 @@
     <link rel="stylesheet" href="css/style.css">
     <!-- <link rel="stylesheet" href="css/responsive.css"> -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
       body {
         background: #f6f8fb;
@@ -34,8 +36,8 @@
       .user-topbar {
         width: 100%;
         height: 64px;
-        background: #fff;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        background: linear-gradient(90deg, #f8fafc 0%, #e9ecef 100%);
+        box-shadow: 0 4px 24px rgba(108,99,255,0.08);
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -56,21 +58,48 @@
       .user-topbar .brand .plus { color: #a51d23; }
       .user-topbar nav {
         display: flex;
-        gap: 24px;
+        gap: 20px;
         align-items: center;
       }
       .user-topbar nav a {
+        display: flex;
+        align-items: center;
+        gap: 8px;
         color: #555;
         text-decoration: none;
         font-size: 1.1rem;
         font-weight: 600;
-        padding: 8px 16px;
-        border-radius: 8px;
-        transition: background 0.2s, color 0.2s;
+        padding: 8px 18px;
+        border-radius: 10px;
+        background: transparent;
+        transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
+        box-shadow: none;
       }
       .user-topbar nav a.active, .user-topbar nav a:hover {
-        background: #e6e9f0;
-        color: #4b49ac;
+        background: #ecebfc;
+        color: #6C63FF;
+        box-shadow: 0 2px 8px rgba(108,99,255,0.08);
+      }
+      .user-topbar nav .admin-login-btn {
+        margin-left: 24px;
+        background: #6C63FF;
+        color: #fff;
+        font-weight: 700;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(108,99,255,0.18);
+        transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
+        font-size: 1.1rem;
+      }
+      .user-topbar nav .admin-login-btn:hover {
+        background: #554ee2;
+        color: #fff;
+        box-shadow: 0 4px 16px rgba(108,99,255,0.22);
+        transform: scale(1.05);
+      }
+      /* Icon size */
+      .user-topbar nav .lucide {
+        width: 20px;
+        height: 20px;
       }
       .user-topbar .profile {
         display: flex;
@@ -177,12 +206,12 @@
     <div class="user-topbar">
       <div class="brand">AidFund<span class="plus">+</span></div>
       <nav>
-        <a href="index.html" class="active">Home</a>
-        <a href="About.html">About</a>
-        <a href="blog.html">Blog</a>
-        <a href="Cause.html">Causes</a>
-        <a href="contact.html">Contact</a>
-        <a href="admin-login.html" class="admin-login-btn">Login as Admin</a>
+        <a href="index.html" class="active"><i data-lucide="home"></i>Home</a>
+        <a href="About.html"><i data-lucide="info"></i>About</a>
+        <a href="blog.html"><i data-lucide="book-open"></i>Blog</a>
+        <a href="Cause.html"><i data-lucide="heart"></i>Causes</a>
+        <a href="contact.html"><i data-lucide="mail"></i>Contact</a>
+        <a href="admin-login.html" class="admin-login-btn"><i data-lucide="user-shield"></i>Login as Admin</a>
       </nav>
     </div>
     <div class="main-content-user">
@@ -819,9 +848,16 @@
     function openDonorModal(amount) {
       document.getElementById('donorModal').style.display = 'flex';
       document.getElementById('donorAmount').value = amount;
+      // Generate and set Reference ID when modal opens
+      document.getElementById('referenceId').value = generateReferenceId();
     }
     function closeDonorModal() {
       document.getElementById('donorModal').style.display = 'none';
+    }
+    function generateReferenceId() {
+      // Simple unique ID: 8 chars, e.g. DNR-AB12CD34
+      const rand = () => Math.random().toString(36).substr(2, 4).toUpperCase();
+      return 'DNR-' + rand() + rand();
     }
     document.addEventListener('DOMContentLoaded', function() {
       var donateBtn = document.querySelector('.donate_now_btn .boxed-btn4');
@@ -849,7 +885,7 @@
         e.preventDefault();
         // You can add AJAX here to send data to backend
         closeDonorModal();
-        alert('Thank you for your donation!');
+        alert('Thank you for your donation!\nYour Reference ID is: ' + document.getElementById('referenceId').value);
       });
     });
     </script>
@@ -875,6 +911,14 @@
           <div class="form-group">
             <label for="donorAmount">Amount</label>
             <input type="number" id="donorAmount" name="donorAmount" min="1" required>
+          </div>
+          <!-- Reference ID Field (auto-generated, read-only) -->
+          <div class="form-group">
+            <label for="referenceId">
+              Reference ID
+              <span title="This ID can be used to search for your donation history." style="cursor:help; color:#6C63FF; font-size:1.1em;">&#9432;</span>
+            </label>
+            <input type="text" id="referenceId" name="referenceId" readonly style="background:#f6f8fb; color:#6C63FF; font-weight:bold;">
           </div>
           <button type="submit" class="donor-submit-btn">Donate</button>
         </form>
@@ -912,6 +956,9 @@
     function closeOrgDescModal() {
       document.getElementById('orgDescModal').style.display = 'none';
     }
+    </script>
+    <script>
+      lucide.createIcons();
     </script>
 </body>
 
