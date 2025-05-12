@@ -172,129 +172,186 @@
       <div class="table-area" id="causes">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h3 style="margin:0; font-size:1.4rem;">Manage Causes</h3>
-          <button class="btn btn-success" id="createCampaignBtn"><i class="fa fa-plus"></i> Create Cause</button>
+          <button class="btn btn-success" id="createCauseBtn"><i class="fa fa-plus"></i> Create Cause</button>
         </div>
         <table class="table">
           <thead>
             <tr>
               <th>ID</th>
+              <th>Thumbnail</th>
               <th>Name</th>
+              <th>Headline</th>
               <th>Description</th>
+              <th>Target</th>
+              <th>Start</th>
+              <th>End</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody id="campaignTableBody">
-            <!-- Causes will be listed here -->
-          </tbody>
+          <tbody id="causesTableBody"></tbody>
         </table>
       </div>
     </div>
+
+    <!-- Create Cause Modal -->
+    <div id="causeModalBg" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(30,40,60,0.18);z-index:9999;align-items:center;justify-content:center;">
+      <div id="causeModal" style="
+        background:#fff;
+        border-radius:18px;
+        box-shadow:0 8px 32px rgba(108,99,255,0.13);
+        padding:24px 36px 18px 36px;
+        min-width:340px;
+        max-width:98vw;
+        width:520px;
+        max-height:90vh;
+        overflow-y:auto;
+        position:relative;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        border:1.5px solid #ecebfc;
+      ">
+        <button onclick="closeCauseModal()" style="position:absolute;top:12px;right:18px;background:none;border:none;font-size:2rem;color:#aaa;cursor:pointer;">&times;</button>
+        <h3 style="font-family:'Fredoka',Arial,sans-serif;font-weight:700;color:#6C63FF;text-align:center;margin-bottom:12px;">Create Cause</h3>
+        <form id="causeForm" autocomplete="off" style="width:100%;display:flex;flex-direction:column;gap:10px;">
+          <div class="form-group">
+            <label style="font-weight:600;">Campaign Name</label>
+            <input type="text" name="title" class="form-control" required style="width:100%;border-radius:8px;padding:8px;">
+          </div>
+          <div class="form-group">
+            <label style="font-weight:600;">Thumbnail Image</label>
+            <input type="file" name="thumbnail" accept="image/*" class="form-control" required style="width:100%;border-radius:8px;padding:8px;">
+            <img id="thumbPreview" style="display:none;margin-top:8px;max-width:100%;border-radius:8px;" />
+          </div>
+          <div class="form-group">
+            <label style="font-weight:600;">Headline</label>
+            <input type="text" name="headline" class="form-control" required style="width:100%;border-radius:8px;padding:8px;">
+          </div>
+          <div class="form-group">
+            <label style="font-weight:600;">Description</label>
+            <textarea name="description" class="form-control" required style="width:100%;border-radius:8px;padding:8px;min-height:60px;"></textarea>
+          </div>
+          <div class="form-group" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            <div>
+              <label style="font-weight:600;">Target Amount</label>
+              <input type="number" name="targetAmount" class="form-control" required style="width:100%;border-radius:8px;padding:8px;">
+            </div>
+            <div>
+              <label style="font-weight:600;">Start Date</label>
+              <input type="date" name="startDate" class="form-control" required style="width:100%;border-radius:8px;padding:8px;">
+            </div>
+            <div>
+              <label style="font-weight:600;">End Date</label>
+              <input type="date" name="endDate" class="form-control" required style="width:100%;border-radius:8px;padding:8px;">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;background:#6C63FF;border:none;border-radius:10px;font-weight:700;font-size:1.1rem;padding:12px 0;margin-top:8px;">Create</button>
+        </form>
+      </div>
+    </div>
+
     <script src="js/jquery-3.6.0.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.form.js"></script>
     <script src="js/ajax-form.js"></script>
+    <script src="js/causes.js"></script>
     <script>
-        $(document).ready(function() {
-          // Sample data for causes
-          let causes = [
-            { id: 1, name: 'Water for All', description: 'Provide clean water to villages.', status: 'Active', donations: 1200 },
-            { id: 2, name: 'Books for Kids', description: 'Distribute books to children.', status: 'Past', donations: 800 },
-            { id: 3, name: 'Food Drive', description: 'Feed the hungry.', status: 'Active', donations: 2000 }
-          ];
+      function updateDashboard() {
+        const causes = getCauses();
+        document.getElementById('totalCauses').textContent = causes.length;
+        const today = new Date();
+        document.getElementById('activeCauses').textContent = causes.filter(c =>
+          new Date(c.startDate) <= today && today <= new Date(c.endDate)
+        ).length;
+        document.getElementById('pastCauses').textContent = causes.filter(c =>
+          new Date(c.endDate) < today
+        ).length;
+        // If you want to sum donations, add logic here:
+        document.getElementById('totalDonations').textContent = "$0";
+      }
 
-          function updateDashboard() {
-            $('#totalCauses').text(causes.length);
-            $('#activeCauses').text(causes.filter(c => c.status === 'Active').length);
-            $('#pastCauses').text(causes.filter(c => c.status === 'Past').length);
-            let totalDon = causes.reduce((sum, c) => sum + (c.donations || 0), 0);
-            $('#totalDonations').text('$' + totalDon);
-          }
+      function openCauseModal() {
+        document.getElementById('causeModalBg').style.display = 'flex';
+        document.getElementById('causeForm').reset();
+        document.getElementById('thumbPreview').style.display = 'none';
+      }
+      function closeCauseModal() {
+        document.getElementById('causeModalBg').style.display = 'none';
+      }
+      document.getElementById('createCauseBtn').onclick = openCauseModal;
 
-          function renderCauses() {
-            let html = '';
-            causes.forEach(function(cause) {
-              html += `<tr>
-                <td>${cause.id}</td>
-                <td>${cause.name}</td>
-                <td>${cause.description}</td>
-                <td><span class="badge badge-${cause.status === 'Active' ? 'success' : 'secondary'}">${cause.status}</span></td>
-                <td>
-                  <button class="btn btn-primary btn-sm edit-btn" data-id="${cause.id}"><i class="fa fa-edit"></i></button>
-                  <button class="btn btn-danger btn-sm delete-btn" data-id="${cause.id}"><i class="fa fa-trash"></i></button>
-                </td>
-              </tr>`;
-            });
-            $('#campaignTableBody').html(html);
-          }
+      // Thumbnail preview
+      document.querySelector('#causeForm input[name="thumbnail"]').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            document.getElementById('thumbPreview').src = evt.target.result;
+            document.getElementById('thumbPreview').style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        }
+      });
 
-          updateDashboard();
-          renderCauses();
+      // Handle form submit
+      document.getElementById('causeForm').onsubmit = function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const fileInput = form.thumbnail;
+        const file = fileInput.files[0];
+        if (!file) return alert('Please select a thumbnail image.');
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const cause = {
+            title: form.title.value,
+            thumbnail: evt.target.result,
+            headline: form.headline.value,
+            description: form.description.value,
+            targetAmount: form.targetAmount.value,
+            startDate: form.startDate.value,
+            endDate: form.endDate.value
+          };
+          addCause(cause);
+          closeCauseModal();
+          renderCausesTable();
+        };
+        reader.readAsDataURL(file);
+      };
 
-          $('#createCampaignBtn').click(function() {
-            let name = prompt('Enter Cause Name:');
-            let description = prompt('Enter Cause Description:');
-            if (name && description) {
-              let newId = causes.length ? Math.max(...causes.map(c => c.id)) + 1 : 1;
-              causes.push({ id: newId, name, description, status: 'Active', donations: 0 });
-              renderCauses();
-              updateDashboard();
-            }
-          });
-
-          $(document).on('click', '.edit-btn', function() {
-            let id = $(this).data('id');
-            let cause = causes.find(c => c.id === id);
-            let newName = prompt('Edit name:', cause.name);
-            let newDesc = prompt('Edit description:', cause.description);
-            let newStatus = prompt('Edit status (Active/Past):', cause.status);
-            if (newName && newDesc && (newStatus === 'Active' || newStatus === 'Past')) {
-              cause.name = newName;
-              cause.description = newDesc;
-              cause.status = newStatus;
-              renderCauses();
-              updateDashboard();
-            }
-          });
-
-          $(document).on('click', '.delete-btn', function() {
-            let id = $(this).data('id');
-            if (confirm('Are you sure you want to delete this cause?')) {
-              causes = causes.filter(c => c.id !== id);
-              renderCauses();
-              updateDashboard();
-            }
-          });
-
-          // Download CSV
-          $('#downloadCSV').click(function() {
-            let csv = 'ID,Name,Description,Status,Donations\n';
-            causes.forEach(c => {
-              csv += `${c.id},"${c.name}","${c.description}",${c.status},${c.donations}\n`;
-            });
-            let blob = new Blob([csv], { type: 'text/csv' });
-            let url = URL.createObjectURL(blob);
-            let a = document.createElement('a');
-            a.href = url;
-            a.download = 'causes_report.csv';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-          });
-
-          // Download PDF (simple, just table as text)
-          $('#downloadPDF').click(function() {
-            let win = window.open('', '', 'width=800,height=600');
-            win.document.write('<h2>Causes Report</h2>');
-            win.document.write('<table border="1" style="width:100%;border-collapse:collapse;"><tr><th>ID</th><th>Name</th><th>Description</th><th>Status</th><th>Donations</th></tr>');
-            causes.forEach(c => {
-              win.document.write(`<tr><td>${c.id}</td><td>${c.name}</td><td>${c.description}</td><td>${c.status}</td><td>${c.donations}</td></tr>`);
-            });
-            win.document.write('</table>');
-            win.print();
-            win.close();
-          });
-        });
+      function renderCausesTable() {
+        const tbody = document.getElementById('causesTableBody');
+        const causes = getCauses();
+        tbody.innerHTML = causes.map(cause => `
+          <tr>
+            <td>${cause.id}</td>
+            <td>${cause.thumbnail ? `<img src="${cause.thumbnail}" style="width:60px;height:40px;object-fit:cover;border-radius:6px;">` : ''}</td>
+            <td>${cause.title}</td>
+            <td>${cause.headline}</td>
+            <td>${cause.description}</td>
+            <td>${cause.targetAmount ? '$'+cause.targetAmount : ''}</td>
+            <td>${cause.startDate}</td>
+            <td>${cause.endDate}</td>
+            <td>${(new Date(cause.startDate) <= new Date() && new Date() <= new Date(cause.endDate)) ? 'Active' : 'Past'}</td>
+            <td>
+              <button class="btn btn-primary btn-sm" onclick="editCause(${cause.id})"><i class="fa fa-edit"></i></button>
+              <button class="btn btn-danger btn-sm" onclick="deleteCauseHandler(${cause.id})"><i class="fa fa-trash"></i></button>
+            </td>
+          </tr>
+        `).join('');
+        updateDashboard();
+      }
+      function editCause(id) {
+        alert('Edit functionality can be implemented similarly with a modal. (Let me know if you want this!)');
+      }
+      function deleteCauseHandler(id) {
+        if (confirm('Delete this cause?')) {
+          deleteCause(id);
+          renderCausesTable();
+        }
+      }
+      renderCausesTable();
+      updateDashboard();
     </script>
 </body>
 </html> 
