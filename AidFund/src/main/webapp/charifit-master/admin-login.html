@@ -3,70 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/themify-icons.css">
-    <link rel="stylesheet" href="css/flaticon.css">
-    <link rel="stylesheet" href="css/magnific-popup.css">
-    <link rel="stylesheet" href="css/nice-select.css">
-    <link rel="stylesheet" href="css/animate.css">
-    <link rel="stylesheet" href="css/slicknav.css">
-    <link rel="stylesheet" href="css/owl.carousel.min.css">
-    <link rel="stylesheet" href="css/gijgo.css">
-    <link rel="stylesheet" href="css/theme-default.css">
+    <title>Admin Login | AidFund+</title>
+    <!-- Fredoka Font (matches your logo) -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&display=swap" rel="stylesheet">
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
       body {
         min-height: 100vh;
-        background: linear-gradient(135deg, #6C63FF 0%, #48c6ef 100%);
         font-family: 'Fredoka', Arial, sans-serif;
+        background: linear-gradient(135deg, #6C63FF 0%, #48c6ef 100%);
+        display: flex;
+        align-items: stretch;
+        justify-content: center;
+        height: 100vh;
+      }
+      .split-container {
+        display: flex;
+        width: 100vw;
+        height: 100vh;
+      }
+      .split-left {
+        background: #fff;
+        flex: 1 1 50%;
         display: flex;
         align-items: center;
         justify-content: center;
+        min-width: 300px;
+        box-shadow: 2px 0 16px 0 rgba(80,80,160,0.06);
+      }
+      .logo-center {
+        text-align: center;
+        width: 100%;
+      }
+      .logo-center .dashboard-logo {
+        font-family: 'Fredoka', Arial, sans-serif;
+        font-weight: 700;
+        font-size: 3rem;
+        color: #222;
+        user-select: none;
+        letter-spacing: 0.5px;
+        display: inline-block;
+      }
+      .logo-center .dashboard-logo .plus {
+        color: #a32020;
+        font-size: 1.2em;
+        margin-left: 2px;
+      }
+      .split-right {
+        flex: 1 1 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        min-width: 340px;
+        position: relative;
       }
       .login-card {
-        background: #fff;
-        border-radius: 18px;
-        box-shadow: 0 4px 32px rgba(108,99,255,0.13);
-        padding: 40px 36px 32px 36px;
+        background: rgba(255,255,255,0.85);
+        border-radius: 24px;
+        box-shadow: 0 8px 32px rgba(80, 80, 160, 0.18), 0 1.5px 8px rgba(108,99,255,0.10);
+        padding: 48px 44px 36px 44px;
         width: 100%;
-        max-width: 400px;
-        margin: 40px 0;
+        max-width: 410px;
+        margin: 0 auto;
         display: flex;
         flex-direction: column;
         align-items: center;
+        border: 1.5px solid rgba(108,99,255,0.10);
+        backdrop-filter: blur(8px);
+        transition: box-shadow 0.2s, background 0.2s;
+        position: relative;
+      }
+      .login-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 24px;
+        background: linear-gradient(120deg,rgba(108,99,255,0.08),rgba(72,198,239,0.06));
+        z-index: 0;
+        pointer-events: none;
+      }
+      .login-card > * {
+        position: relative;
+        z-index: 1;
       }
       .login-card h3 {
         font-family: 'Fredoka', Arial, sans-serif;
         font-weight: 700;
-        color: #6C63FF;
+        color: #222;
         text-align: center;
-        margin-bottom: 28px;
+        margin-bottom: 32px;
+        font-size: 1.8rem;
+        letter-spacing: 0.2px;
       }
       .login-card .form-group {
         width: 100%;
-        margin-bottom: 18px;
+        margin-bottom: 22px;
         position: relative;
       }
       .login-card .form-group label {
-        font-weight: 600;
-        color: #444;
-        margin-bottom: 4px;
+        font-weight: 700;
+        color: #222;
+        margin-bottom: 7px;
         display: block;
+        font-size: 1.05rem;
+        letter-spacing: 0.1px;
+        font-family: 'Fredoka', Arial, sans-serif;
       }
       .login-card .form-control {
-        border-radius: 8px;
+        border-radius: 14px;
         border: 1.5px solid #e6e9f0;
         background: #f6f8fb;
-        font-size: 1.1rem;
-        padding: 10px 14px 10px 40px;
+        font-size: 1.13rem;
+        padding: 14px 16px 14px 48px;
         width: 100%;
         outline: none;
-        transition: border 0.2s;
+        transition: border 0.2s, background 0.2s;
+        font-family: 'Fredoka', Arial, sans-serif;
+        color: #222;
+        font-weight: 700;
+        box-sizing: border-box;
       }
       .login-card .form-control:focus {
         border-color: #6C63FF;
@@ -74,66 +136,141 @@
       }
       .login-card .form-group .lucide {
         position: absolute;
-        left: 12px;
+        left: 16px;
         top: 50%;
         transform: translateY(-50%);
         color: #bdbdbd;
-        width: 20px;
-        height: 20px;
+        width: 22px;
+        height: 22px;
+        pointer-events: none;
       }
       .login-card .btn-primary {
         background: #6C63FF;
         border: none;
-        border-radius: 10px;
+        border-radius: 14px;
         font-weight: 700;
-        font-size: 1.1rem;
-        box-shadow: 0 2px 8px rgba(108,99,255,0.18);
-        margin-top: 8px;
+        font-size: 1.15rem;
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(108,99,255,0.13);
+        margin-top: 10px;
         width: 100%;
-        padding: 12px 0;
+        padding: 16px 0;
         transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+        cursor: pointer;
+        letter-spacing: 0.2px;
+        font-family: 'Fredoka', Arial, sans-serif;
       }
       .login-card .btn-primary:hover {
         background: #554ee2;
-        box-shadow: 0 4px 16px rgba(108,99,255,0.22);
+        box-shadow: 0 4px 16px rgba(108,99,255,0.18);
         transform: scale(1.03);
       }
       .login-card .forgot-link {
         display: block;
-        margin: 18px 0 0 0;
+        margin: 22px 0 0 0;
         text-align: center;
         color: #6C63FF;
         text-decoration: none;
-        font-weight: 500;
-        transition: text-decoration 0.2s;
+        font-weight: 700;
+        font-size: 1.05rem;
+        transition: text-decoration 0.2s, color 0.2s;
+        font-family: 'Fredoka', Arial, sans-serif;
       }
       .login-card .forgot-link:hover {
         text-decoration: underline;
+        color: #554ee2;
       }
-      @media (max-width: 500px) {
+      @media (max-width: 1100px) {
+        .split-container {
+          flex-direction: column;
+        }
+        .split-left, .split-right {
+          min-width: 0;
+          width: 100vw;
+          min-height: 180px;
+          box-shadow: none;
+        }
+        .split-left {
+          justify-content: flex-start;
+          padding-top: 40px;
+          padding-bottom: 10px;
+          box-shadow: none;
+        }
+        .split-right {
+          justify-content: flex-start;
+          padding-top: 0;
+        }
+        .logo-center .dashboard-logo {
+          font-size: 2.1rem;
+        }
+      }
+      @media (max-width: 700px) {
         .login-card {
           padding: 24px 8px 20px 8px;
+          max-width: 98vw;
         }
+        .logo-center .dashboard-logo {
+          font-size: 1.3rem;
+        }
+      }
+      .back-home-btn {
+        margin-top: 18px;
+        background: #fff;
+        color: #6C63FF;
+        border: 2px solid #6C63FF;
+        border-radius: 12px;
+        font-family: 'Fredoka', Arial, sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+        padding: 10px 0;
+        width: 100%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: background 0.18s, color 0.18s, border 0.18s;
+        box-shadow: 0 1px 4px rgba(108,99,255,0.07);
+      }
+      .back-home-btn:hover {
+        background: #6C63FF;
+        color: #fff;
+        border-color: #554ee2;
       }
     </style>
 </head>
 <body>
-    <div class="login-card">
-      <h3>Admin Login</h3>
-      <form id="adminLoginForm">
-        <div class="form-group">
-          <label for="username">Username</label>
-          <i data-lucide="user"></i>
-          <input type="text" class="form-control" id="username" name="username" required>
+    <div class="split-container">
+      <div class="split-left">
+        <div class="logo-center">
+          <span class="dashboard-logo">
+            AidFund<span class="plus">+</span>
+          </span>
         </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <i data-lucide="lock"></i>
-          <input type="password" class="form-control" id="password" name="password" required>
+      </div>
+      <div class="split-right">
+        <div class="login-card">
+          <h3>Admin Login</h3>
+          <form id="adminLoginForm" autocomplete="off">
+            <div class="form-group">
+              <label for="username">Username</label>
+              <i data-lucide="user"></i>
+              <input type="text" class="form-control" id="username" name="username" required autocomplete="username">
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <i data-lucide="lock"></i>
+              <input type="password" class="form-control" id="password" name="password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn-primary">Login</button>
+          </form>
+          <a href="#" class="forgot-link">Forgot Password?</a>
+          <!-- Back to Homepage Button -->
+          <button onclick="window.location.href='index.html'" class="back-home-btn" type="button">
+            <i data-lucide="arrow-left"></i> Back to Homepage
+          </button>
         </div>
-        <button type="submit" class="btn btn-primary">Login</button>
-      </form>
-      <a href="#" class="forgot-link">Forgot Password?</a>
+      </div>
     </div>
     <script>
       lucide.createIcons();
