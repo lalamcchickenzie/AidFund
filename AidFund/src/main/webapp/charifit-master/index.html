@@ -627,65 +627,75 @@
     </div>
     <!-- news__area_end  -->
 
+    <!-- ===== Make a Donation Section ===== -->
     <div data-scroll-index='1' class="make_donation_area section_padding">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-lg-6">
+                <div class="col-lg-8">
                     <div class="section_title text-center mb-55">
                         <h3><span>Make a Donation</span></h3>
                     </div>
                 </div>
             </div>
-            <div class="row justify-content-center">
-                <div class="col-lg-6">
-                    <form action="#" class="donation_form">
-                        <div class="row align-items-center">
-                            <div class="col-md-4">
-                                <div class="single_amount">
-                                    <div class="input_field">
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                              <span class="input-group-text" id="basic-addon1">$</span>
-                                            </div>
-                                            <input type="text" class="form-control" placeholder="40,200" aria-label="Username" aria-describedby="basic-addon1">
-                                          </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-8">
-                                <div class="single_amount">
-                                   <div class="fixed_donat d-flex align-items-center justify-content-between">
-                                       <div class="select_prise">
-                                           <h4>Select Amount:</h4>
-                                       </div>
-                                        <div class="single_doonate"> 
-                                            <input type="radio" id="blns_1" name="radio-group" checked>
-                                            <label for="blns_1">10</label>
-                                        </div>
-                                        <div class="single_doonate"> 
-                                            <input type="radio" id="blns_2" name="radio-group" checked>
-                                            <label for="blns_2">30</label>
-                                        </div>
-                                        <div class="single_doonate"> 
-                                            <input type="radio" id="Other" name="radio-group" checked>
-                                            <label for="Other">Other</label>
-                                        </div>
-                                   </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="donate_now_btn text-center">
-                        <a href="#" class="boxed-btn4">Donate Now</a>
+            <form id="mainDonationForm" style="max-width:500px; margin:auto;">
+                <div class="form-group mb-3">
+                    <label for="donationAmount"><b>Amount (RM)</b></label>
+                    <div style="display:flex; gap:8px; margin-bottom:8px;">
+                        <button type="button" class="btn btn-outline-primary preset-amount" data-amount="10" style="flex:1;">10</button>
+                        <button type="button" class="btn btn-outline-primary preset-amount" data-amount="50" style="flex:1;">50</button>
+                        <button type="button" class="btn btn-outline-primary preset-amount" data-amount="other" style="flex:1;">Other</button>
                     </div>
+                    <input type="number" class="form-control" id="donationAmount" name="donationAmount" min="1" required placeholder="Enter amount">
                 </div>
-
-            </div>
+                <div class="form-group mb-3">
+                    <label for="causeSelect"><b>Select Cause</b></label>
+                    <select id="causeSelect" name="causeSelect" class="form-control" required>
+                        <option value="">Choose a cause...</option>
+                    </select>
+                </div>
+                <button type="button" id="openDonorModal" class="btn" style="background:#6C63FF; color:#fff; font-weight:700; border-radius:10px; padding:12px 32px; font-size:1.1em; width:100%;">Donate Now</button>
+            </form>
         </div>
+    </div>
+
+    <!-- ===== Donor Modal ===== -->
+    <div id="donorModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.18); z-index:9999; align-items:center; justify-content:center;">
+      <div style="background:#fff; border-radius:18px; max-width:400px; width:95%; margin:auto; box-shadow:0 8px 32px rgba(108,99,255,0.12); padding:32px 24px; position:relative; max-height:90vh; overflow-y:auto;">
+        <button id="closeDonorModal" style="position:absolute; top:16px; right:16px; background:none; border:none; font-size:1.5em; color:#888; cursor:pointer;">&times;</button>
+        <h3 style="font-family:'Fredoka',Arial,sans-serif; font-weight:700; text-align:center; margin-bottom:24px;">Donor Details</h3>
+        <form id="donorModalForm" name="donorModalForm">
+          <div class="form-group mb-3">
+            <label for="modalCauseTitle"><b>Cause</b></label>
+            <input type="text" id="modalCauseTitle" name="modalCauseTitle" class="form-control" readonly style="border-radius:8px; background:#f4f4f4;">
+          </div>
+          <div class="form-group mb-3">
+            <label for="donorName">Name</label>
+            <input type="text" class="form-control" id="donorName" name="donorName" placeholder="Name" required style="border-radius:8px;">
+          </div>
+          <div class="form-group mb-3">
+            <label for="donorEmail">Email</label>
+            <input type="email" class="form-control" id="donorEmail" name="donorEmail" placeholder="Email" required style="border-radius:8px;">
+          </div>
+          <div class="form-group mb-3">
+            <label for="donorPhone">Telephone</label>
+            <input type="tel" class="form-control" id="donorPhone" name="donorPhone" placeholder="Telephone" required style="border-radius:8px;">
+          </div>
+          <div class="form-group mb-3">
+            <label for="modalDonationAmount">Amount</label>
+            <input type="number" class="form-control" id="modalDonationAmount" name="modalDonationAmount" placeholder="Amount" min="1" required style="border-radius:8px; background:#f4f4f4;" readonly>
+          </div>
+          <!-- Reference ID (generated and shown after donation) -->
+          <div id="refIdContainer" class="form-group mb-3" style="display:none;">
+            <label for="refId"><b>Reference ID</b></label>
+            <input type="text" class="form-control" id="refId" name="refId" readonly style="font-weight:bold; color:#6C63FF; text-align:center;">
+            <div style="font-size:0.95em; color:#888; margin-top:4px;">Please save this Reference ID to check your donation status.</div>
+          </div>
+          <div class="form-group text-center">
+            <button type="submit" class="btn" style="background:#6C63FF; color:#fff; font-weight:700; border-radius:10px; padding:12px 32px; font-size:1.1em; width:100%;">Donate</button>
+          </div>
+        </form>
+        <div id="donationSuccess" class="alert alert-success mt-4" style="display:none; border-radius:12px; text-align:center;"></div>
+      </div>
     </div>
 
     <!-- footer_start  -->
@@ -815,8 +825,6 @@
     </footer>
     <!-- footer_end  -->
 
-    <!-- link that opens popup -->
-
     <!-- JS here -->
     <script src="js/vendor/modernizr-3.5.0.min.js"></script>
     <script src="js/vendor/jquery-1.12.4.min.js"></script>
@@ -845,85 +853,154 @@
 
     <script src="js/main.js"></script>
     <script>
-    function openDonorModal(amount) {
-      document.getElementById('donorModal').style.display = 'flex';
-      document.getElementById('donorAmount').value = amount;
-      // Generate and set Reference ID when modal opens
-      document.getElementById('referenceId').value = generateReferenceId();
+    function formatCurrency(amount) {
+      return 'RM ' + Number(amount).toLocaleString('en-MY', {minimumFractionDigits: 2});
     }
-    function closeDonorModal() {
-      document.getElementById('donorModal').style.display = 'none';
+
+    function formatDate(dateStr) {
+      const d = new Date(dateStr);
+      return d.toLocaleDateString('en-MY', {year: 'numeric', month: 'short', day: 'numeric'});
     }
-    function generateReferenceId() {
-      // Simple unique ID: 8 chars, e.g. DNR-AB12CD34
-      const rand = () => Math.random().toString(36).substr(2, 4).toUpperCase();
-      return 'DNR-' + rand() + rand();
+
+    // Generate a unique Reference ID for each donation
+    function generateRefId() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let id = 'DNR-';
+      for (let i = 0; i < 7; i++) id += chars.charAt(Math.floor(Math.random() * chars.length));
+      return id;
     }
-    document.addEventListener('DOMContentLoaded', function() {
-      var donateBtn = document.querySelector('.donate_now_btn .boxed-btn4');
-      if (donateBtn) {
-        donateBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          // Get selected amount
-          var checkedRadio = document.querySelector('.donation_form input[type="radio"]:checked');
-          var amount = 10;
-          if (checkedRadio) {
-            var label = checkedRadio.nextElementSibling;
-            if (label && label.textContent.trim().toLowerCase() === 'other') {
-              // Get custom amount from input
-              var customInput = document.querySelector('.donation_form input.form-control');
-              amount = customInput && customInput.value ? customInput.value : '';
-            } else {
-              amount = label ? label.textContent.trim() : 10;
-            }
-          }
-          openDonorModal(amount);
-        });
+
+    function populateCauseSelect() {
+      const select = document.getElementById('causeSelect');
+      select.innerHTML = '<option value="">Choose a cause...</option>';
+      let causes = [];
+      try { causes = JSON.parse(localStorage.getItem('causes')) || []; } catch (e) {}
+      const now = new Date();
+      causes.forEach(cause => {
+        if (
+          cause.id &&
+          cause.title &&
+          cause.startDate && cause.endDate &&
+          new Date(cause.startDate) <= now && new Date(cause.endDate) >= now
+        ) {
+          const opt = document.createElement('option');
+          opt.value = cause.id;
+          opt.textContent = cause.title;
+          select.appendChild(opt);
+        }
+      });
+    }
+
+    const donorModal = document.getElementById('donorModal');
+    const closeDonorModal = document.getElementById('closeDonorModal');
+    document.getElementById('openDonorModal').addEventListener('click', function() {
+      const select = document.getElementById('causeSelect');
+      const amount = document.getElementById('donationAmount').value;
+      if (!select.value) {
+        alert('Please select a cause.');
+        return;
       }
-      // Optional: handle form submit (AJAX or just close modal for demo)
-      document.getElementById('donorForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        // You can add AJAX here to send data to backend
-        closeDonorModal();
-        alert('Thank you for your donation!\nYour Reference ID is: ' + document.getElementById('referenceId').value);
+      if (!amount || Number(amount) < 1) {
+        alert('Please enter a valid amount.');
+        return;
+      }
+      document.getElementById('modalCauseTitle').value = select.options[select.selectedIndex].text;
+      document.getElementById('modalCauseTitle').dataset.causeId = select.value;
+      document.getElementById('modalDonationAmount').value = amount;
+      // Generate and show Reference ID immediately
+      const refId = generateRefId();
+      document.getElementById('refId').value = refId;
+      document.getElementById('refIdContainer').style.display = 'block';
+      donorModal.style.display = 'flex';
+    });
+    closeDonorModal.addEventListener('click', function() {
+      donorModal.style.display = 'none';
+      document.getElementById('donorModalForm').reset();
+      document.getElementById('donationSuccess').style.display = 'none';
+      document.getElementById('refIdContainer').style.display = 'none';
+    });
+    window.onclick = function(event) {
+      if (event.target === donorModal) {
+        donorModal.style.display = 'none';
+        document.getElementById('donorModalForm').reset();
+        document.getElementById('donationSuccess').style.display = 'none';
+        document.getElementById('refIdContainer').style.display = 'none';
+      }
+    };
+
+    document.getElementById('donorModalForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const causeId = document.getElementById('modalCauseTitle').dataset.causeId;
+      const amount = Number(document.getElementById('modalDonationAmount').value);
+      const donorName = document.getElementById('donorName').value;
+      const donorEmail = document.getElementById('donorEmail').value;
+      const donorPhone = document.getElementById('donorPhone').value;
+      const refId = document.getElementById('refId').value;
+      if (!causeId || !amount || amount < 1) {
+        alert('Please select a cause and enter a valid amount.');
+        return;
+      }
+      let donations = [];
+      try { donations = JSON.parse(localStorage.getItem('donations')) || []; } catch (e) {}
+      donations.push({
+        id: Date.now(),
+        refId,
+        causeId,
+        amount,
+        donorName,
+        donorEmail,
+        donorPhone,
+        date: new Date().toISOString()
+      });
+      localStorage.setItem('donations', JSON.stringify(donations));
+      // Show Reference ID and success message
+      document.getElementById('refId').value = refId;
+      document.getElementById('refIdContainer').style.display = 'block';
+      document.getElementById('donationSuccess').style.display = 'block';
+      document.getElementById('donationSuccess').innerHTML = `
+        <div style="font-size:1.1em; margin-bottom:8px; color: #3CC78F; font-weight: bold;">Donation Successful! Thank you for your generosity.</div>
+        <div style="font-size:1em; margin-bottom:4px;"><b>Your Reference ID:</b></div>
+        <input type="text" class="form-control" value="${refId}" readonly style="font-weight:bold; color:#6C63FF; text-align:center; margin-bottom:8px;">
+        <div style="font-size:0.95em; color:#888;">Please save this Reference ID to check your donation status.</div>
+        <button id='closeAfterSuccess' class='btn' style='margin-top:16px;background:#6C63FF;color:#fff;font-weight:700;border-radius:10px;padding:10px 28px;font-size:1.1em;width:100%;'>Close</button>
+      `;
+      // Disable all form fields and the Donate button
+      Array.from(document.querySelectorAll('#donorModalForm input, #donorModalForm button[type="submit"]')).forEach(el => el.disabled = true);
+      // Add event for the close button
+      setTimeout(() => {
+        const closeBtn = document.getElementById('closeAfterSuccess');
+        if (closeBtn) {
+          closeBtn.onclick = function() {
+            donorModal.style.display = 'none';
+            document.getElementById('donorModalForm').reset();
+            document.getElementById('donationSuccess').style.display = 'none';
+            document.getElementById('refIdContainer').style.display = 'none';
+            // Re-enable form fields for next donation
+            Array.from(document.querySelectorAll('#donorModalForm input, #donorModalForm button[type="submit"]')).forEach(el => el.disabled = false);
+          };
+        }
+      }, 100);
+      window.dispatchEvent(new Event('donationsUpdated'));
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      populateCauseSelect();
+      const amountInput = document.getElementById('donationAmount');
+      document.querySelectorAll('.preset-amount').forEach(btn => {
+        btn.addEventListener('click', function() {
+          if (this.dataset.amount === 'other') {
+            amountInput.value = '';
+            amountInput.focus();
+          } else {
+            amountInput.value = this.dataset.amount;
+          }
+          // Optional: visually highlight selected button
+          document.querySelectorAll('.preset-amount').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+        });
       });
     });
     </script>
-
-    <!-- Donor Modal HTML -->
-    <div id="donorModal" class="donor-modal-bg" style="display:none;">
-      <div class="donor-modal">
-        <button class="donor-modal-close" onclick="closeDonorModal()">&times;</button>
-        <h2>Donor Details</h2>
-        <form id="donorForm" class="donor-form">
-          <div class="form-group">
-            <label for="donorName">Name</label>
-            <input type="text" id="donorName" name="donorName" required>
-          </div>
-          <div class="form-group">
-            <label for="donorEmail">Email</label>
-            <input type="email" id="donorEmail" name="donorEmail" required>
-          </div>
-          <div class="form-group">
-            <label for="donorPhone">Telephone</label>
-            <input type="tel" id="donorPhone" name="donorPhone" required>
-          </div>
-          <div class="form-group">
-            <label for="donorAmount">Amount</label>
-            <input type="number" id="donorAmount" name="donorAmount" min="1" required>
-          </div>
-          <!-- Reference ID Field (auto-generated, read-only) -->
-          <div class="form-group">
-            <label for="referenceId">
-              Reference ID
-              <span title="This ID can be used to search for your donation history." style="cursor:help; color:#6C63FF; font-size:1.1em;">&#9432;</span>
-            </label>
-            <input type="text" id="referenceId" name="referenceId" readonly style="background:#f6f8fb; color:#6C63FF; font-weight:bold;">
-          </div>
-          <button type="submit" class="donor-submit-btn">Donate</button>
-        </form>
-      </div>
-    </div>
 
     <!-- Add after the donor modal HTML -->
     <div id="orgDescModal" class="donor-modal-bg" style="display:none;">

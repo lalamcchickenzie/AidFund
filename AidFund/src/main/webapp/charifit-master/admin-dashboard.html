@@ -32,6 +32,14 @@
         padding: 30px 0 0 0;
         z-index: 100;
         border-radius: 0 20px 20px 0;
+        transition: width 0.3s, opacity 0.3s;
+        opacity: 1;
+        overflow: hidden;
+      }
+      .sidebar.collapsed {
+        width: 0;
+        opacity: 0;
+        pointer-events: none;
       }
       .sidebar .brand {
         font-size: 2rem;
@@ -40,9 +48,22 @@
         margin-bottom: 2rem;
         text-align: center;
         letter-spacing: 1px;
+        transition: opacity 0.3s, font-size 0.3s, margin-bottom 0.3s;
+        opacity: 1;
       }
-      .sidebar .brand .plus { color: #a51d23; }
-      .sidebar ul { list-style: none; padding: 0; }
+      .sidebar.collapsed .brand {
+        opacity: 0;
+      }
+      .sidebar ul {
+        list-style: none; padding: 0;
+        transition: opacity 0.3s;
+      }
+      .sidebar.collapsed ul {
+        opacity: 0;
+        pointer-events: none;
+        height: 0;
+        overflow: hidden;
+      }
       .sidebar ul li { margin: 18px 0; }
       .sidebar ul li a {
         color: #555;
@@ -67,19 +88,71 @@
         justify-content: space-between;
         padding: 0 32px;
         border-radius: 0 0 20px 20px;
+        transition: margin-left 0.3s;
       }
-      .topbar .profile {
-        display: flex;
-        align-items: center;
-        gap: 18px;
-      }
-      .topbar .profile img {
-        width: 36px; height: 36px; border-radius: 50%;
+      .sidebar.collapsed ~ .topbar {
+        margin-left: 0;
       }
       .dashboard-content {
         margin-left: 240px;
         margin-top: 80px;
         padding: 32px 32px 32px 0;
+        transition: margin-left 0.3s;
+      }
+      .sidebar.collapsed ~ .dashboard-content {
+        margin-left: 18px;
+      }
+      .dashboard-logo-floating {
+        display: none;
+        position: fixed;
+        top: 18px;
+        left: 18px;
+        z-index: 101;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #222;
+        background: #fff;
+        border-radius: 12px;
+        padding: 8px 18px 8px 12px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        letter-spacing: 1px;
+        align-items: center;
+        gap: 10px;
+      }
+      .sidebar.collapsed ~ .dashboard-logo-floating {
+        display: flex;
+      }
+      #sidebarToggle {
+        background: none;
+        border: none;
+        font-size: 1.7rem;
+        margin-bottom: 10px;
+        cursor: pointer;
+        outline: none;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        z-index: 102;
+        position: relative;
+      }
+      .sidebar.collapsed ~ .dashboard-logo-floating #sidebarToggleFloating {
+        display: inline-block;
+      }
+      #sidebarToggleFloating {
+        background: none;
+        border: none;
+        font-size: 1.7rem;
+        cursor: pointer;
+        outline: none;
+        margin-right: 8px;
+        display: none;
+      }
+      @media (max-width: 700px) {
+        .sidebar { width: 100vw; border-radius: 0; }
+        .sidebar.collapsed { width: 0; }
+        .dashboard-content { margin-left: 0; }
+        .sidebar.collapsed ~ .dashboard-content { margin-left: 0; }
+        .topbar { margin-left: 0; }
       }
       .dashboard-cards {
         display: flex;
@@ -130,20 +203,24 @@
     </style>
 </head>
 <body>
-    <div class="sidebar">
-      <div class="brand">AidFund<span class="plus">+</span></div>
-      <ul>
+    <div class="sidebar" id="sidebar">
+      <div class="brand">AidFund<span class="plus" style="color:#a32020; font-weight:700;">+</span></div>
+      <button id="sidebarToggle" title="Toggle Menu">☰</button>
+      <ul id="sidebarMenu">
         <li><a href="#" class="active"><i class="fa fa-tachometer"></i> Dashboard</a></li>
         <li><a href="#causes"><i class="fa fa-heart"></i> Causes</a></li>
-        <li><a href="#reports"><i class="fa fa-file"></i> Reports</a></li>
+        <li><a href="report.html"><i class="fa fa-file"></i> Reports</a></li>
         <li><a href="admin-login.html"><i class="fa fa-sign-out"></i> Logout</a></li>
       </ul>
+    </div>
+    <div class="dashboard-logo-floating" id="dashboardLogoFloating">
+      <button id="sidebarToggleFloating" title="Show Menu">☰</button>
+      <span style="font-weight:700; font-size:2rem; color:#222; font-family:'Fredoka',Arial,sans-serif;">AidFund<span class="plus" style="color:#a32020; font-weight:700;">+</span></span>
     </div>
     <div class="topbar">
       <div><b>Welcome, Admin</b></div>
       <div class="profile">
         <i class="fa fa-bell" style="font-size: 1.3rem; color: #4b49ac;"></i>
-        <img src="img/volenteer/1.png" alt="profile">
       </div>
     </div>
     <div class="dashboard-content">
@@ -251,29 +328,6 @@
           </div>
           <button type="submit" id="causeFormSubmitBtn" class="btn btn-primary" style="width:100%;background:#6C63FF;border:none;border-radius:10px;font-weight:700;font-size:1.1rem;padding:12px 0;margin-top:8px;">Create</button>
         </form>
-      </div>
-    </div>
-
-    <!-- Reports Section -->
-    <div id="reportsSection" style="margin-top:40px;">
-      <h4 style="font-weight:700;">Donation Reports</h4>
-      <div class="table-responsive">
-        <table class="table" id="donationsTable">
-          <thead>
-            <tr>
-              <th>Reference ID</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Telephone</th>
-              <th>Amount</th>
-              <th>Cause</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Rows will be rendered by JS -->
-          </tbody>
-        </table>
       </div>
     </div>
 
@@ -440,33 +494,22 @@
         }
       }
 
-      function renderDonationsTable() {
-        let donations = [];
-        try { donations = JSON.parse(localStorage.getItem('donations')) || []; } catch (e) {}
-        let causes = [];
-        try { causes = JSON.parse(localStorage.getItem('causes')) || []; } catch (e) {}
-        const tbody = document.querySelector('#donationsTable tbody');
-        tbody.innerHTML = '';
-        donations.forEach(donation => {
-          const cause = causes.find(c => c.id == donation.causeId);
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${donation.refId ? donation.refId : (donation.id ? donation.id : '<span style=\'color:#bbb\'>(none)</span>')}</td>
-            <td>${donation.donorName || ''}</td>
-            <td>${donation.donorEmail || ''}</td>
-            <td>${donation.donorPhone || ''}</td>
-            <td>${donation.amount ? 'RM ' + Number(donation.amount).toLocaleString('en-MY', {minimumFractionDigits: 2}) : ''}</td>
-            <td>${cause ? cause.title : ''}</td>
-            <td>${donation.date ? new Date(donation.date).toLocaleDateString('en-MY', {year: 'numeric', month: 'short', day: 'numeric'}) : ''}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-      }
-
-      document.addEventListener('DOMContentLoaded', function() {
-        renderDonationsTable();
-      });
-      window.addEventListener('donationsUpdated', renderDonationsTable);
+      // Sidebar collapse/expand
+      document.getElementById('sidebarToggle').onclick = function() {
+        var sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('collapsed');
+        var floatingLogo = document.getElementById('dashboardLogoFloating');
+        if (sidebar.classList.contains('collapsed')) {
+          floatingLogo.style.display = 'flex';
+        } else {
+          floatingLogo.style.display = 'none';
+        }
+      };
+      document.getElementById('sidebarToggleFloating').onclick = function() {
+        var sidebar = document.getElementById('sidebar');
+        sidebar.classList.remove('collapsed');
+        document.getElementById('dashboardLogoFloating').style.display = 'none';
+      };
     </script>
 </body>
 </html> 
