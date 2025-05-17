@@ -277,9 +277,11 @@
       document.getElementById('adminLoginForm').onsubmit = function(e) {
         e.preventDefault();
         // Demo: hardcoded credentials
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
         if (
-          document.getElementById('username').value === 'justinbieber' &&
-          document.getElementById('password').value === 'hailey'
+          (username === 'justinbieber' && password === 'hailey') ||
+          (username === 'lalamcchickenzie' && password === 'hailey')
         ) {
           window.location.href = 'admin-dashboard.html';
         } else {
