@@ -16,7 +16,7 @@ public class ViewAllCampaignServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String statusFilter = request.getParameter("status"); // e.g., "active", "inactive", or null
+        String statusFilter = request.getParameter("status"); // e.g., "active", "inactive"
 
         try {
             // 1. Connect to DB

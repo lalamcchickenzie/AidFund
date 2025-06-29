@@ -1,18 +1,23 @@
 package controller;
 
-import jakarta.servlet.*;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
+
 import dao.CampaignDAO;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import model.Campaign;
 import util.DBConnection;
 
 @WebServlet("/viewActiveCampaign")
 public class ViewActiveCampaignServlet extends HttpServlet {
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try (Connection conn = DBConnection.getConnection()) {
             CampaignDAO dao = new CampaignDAO(conn);
             List<Campaign> activeCampaigns = dao.getAllCampaigns("active");
