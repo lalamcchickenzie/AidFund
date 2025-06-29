@@ -5,29 +5,35 @@ import java.util.ArrayList;
 import model.Donation;
 
 public class DonationDAO {
-    public static ArrayList<Donation> getAllDonations() throws Exception {
-        ArrayList<Donation> list = new ArrayList<>();
+    private static Connection connection = null;
 
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection conn = DriverManager.getConnection(
-            "jdbc:mysql://localhost:3306/aidfund", "root", "");
+    // Get all donation records
+    public static ArrayList<Donation> getAllDonations() throws SQLException {
+        ArrayList<Donation> donations = new ArrayList<>();
 
-        String sql = "SELECT * FROM donation";
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
+        try {
+            String query = "SELECT * FROM donation";
+            connection = ConnectionManager.getConnection();
+            PreparedStatement ps = connection.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
 
-        while (rs.next()) {
-            Donation d = new Donation();
-            d.setId(rs.getInt("id"));
-            d.setName(rs.getString("donor_name"));
-            d.setEmail(rs.getString("email"));
-            d.setAmount(rs.getDouble("amount"));
-            d.setDate(rs.getString("date"));
-            d.setCampaign(rs.getString("campaign_name"));
-            list.add(d);
+            while (rs.next()) {
+                Donation d = new Donation();
+                d.setId(rs.getInt("id"));
+                d.setName(rs.getString("donor_name"));
+                d.setEmail(rs.getString("email"));
+                d.setAmount(rs.getDouble("amount"));
+                d.setDate(rs.getString("date"));
+                d.setCampaign(rs.getString("campaign_name"));
+                donations.add(d);
+            }
+
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-        conn.close();
-        return list;
+        return donations;
     }
 }
