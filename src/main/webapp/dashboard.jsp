@@ -1,3 +1,5 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +18,6 @@
     <link rel="stylesheet" href="css/owl.carousel.min.css">
     <link rel="stylesheet" href="css/gijgo.css">
     <link rel="stylesheet" href="css/theme-default.css">
-    <!-- Fredoka font for modern look -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&display=swap" rel="stylesheet">
     <style>
       body {
@@ -135,18 +136,6 @@
         z-index: 102;
         position: relative;
       }
-      .sidebar.collapsed ~ .dashboard-logo-floating #sidebarToggleFloating {
-        display: inline-block;
-      }
-      #sidebarToggleFloating {
-        background: none;
-        border: none;
-        font-size: 1.7rem;
-        cursor: pointer;
-        outline: none;
-        margin-right: 8px;
-        display: none;
-      }
       @media (max-width: 700px) {
         .sidebar { width: 100vw; border-radius: 0; }
         .sidebar.collapsed { width: 0; }
@@ -154,67 +143,21 @@
         .sidebar.collapsed ~ .dashboard-content { margin-left: 0; }
         .topbar { margin-left: 0; }
       }
-      .dashboard-cards {
-        display: flex;
-        gap: 24px;
-        margin-bottom: 32px;
-      }
-      .dashboard-card {
-        background: #fff;
-        border-radius: 18px;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-        padding: 24px 32px;
-        flex: 1;
-        min-width: 180px;
-        text-align: center;
-      }
-      .dashboard-card h4 {
-        font-size: 1.1rem;
-        color: #888;
-        margin-bottom: 8px;
-      }
-      .dashboard-card .count {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: #4b49ac;
-      }
-      .table-area {
-        background: #fff;
-        border-radius: 18px;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-        padding: 24px;
-      }
-      .btn-primary, .btn-success, .btn-danger, .btn-warning {
-        border-radius: 8px;
-        font-weight: 600;
-      }
-      .table thead th {
-        background: #f6f8fb;
-        border: none;
-      }
-      .table tbody tr {
-        border-top: 1px solid #f0f0f0;
-      }
-      .download-btns {
-        margin-bottom: 18px;
-        display: flex;
-        gap: 12px;
-      }
     </style>
 </head>
 <body>
     <div class="sidebar" id="sidebar">
       <div class="brand">AidFund<span class="plus" style="color:#a32020; font-weight:700;">+</span></div>
-      <button id="sidebarToggle" title="Toggle Menu">☰</button>
+      <button id="sidebarToggle" title="Toggle Menu">&#9776;</button>
       <ul id="sidebarMenu">
-        <li><a href="#" class="active"><i class="fa fa-tachometer"></i> Dashboard</a></li>
-        <li><a href="#causes"><i class="fa fa-heart"></i> Causes</a></li>
-        <li><a href="report.html"><i class="fa fa-file"></i> Reports</a></li>
-        <li><a href="admin-login.html"><i class="fa fa-sign-out"></i> Logout</a></li>
+		<li><a href="dashboard.jsp" class="active"><i class="fa fa-tachometer"></i> Dashboard</a></li>
+        <li><a href="ListCauseController"><i class="fa fa-heart"></i> Causes</a></li>
+        <li><a href="report.jsp"><i class="fa fa-file"></i> Reports</a></li>
+		<li><a href="LogoutController"><i class="fa fa-sign-out"></i> Logout</a></li>
       </ul>
     </div>
     <div class="dashboard-logo-floating" id="dashboardLogoFloating">
-      <button id="sidebarToggleFloating" title="Show Menu">☰</button>
+      <button id="sidebarToggleFloating" title="Show Menu">&#9776;</button>
       <span style="font-weight:700; font-size:2rem; color:#222; font-family:'Fredoka',Arial,sans-serif;">AidFund<span class="plus" style="color:#a32020; font-weight:700;">+</span></span>
     </div>
     <div class="topbar">
@@ -224,32 +167,36 @@
       </div>
     </div>
     <div class="dashboard-content">
+    <c:if test="${not empty errorMessage}">
+  <div class="alert alert-danger">${errorMessage}</div>
+	</c:if>
       <div class="dashboard-cards" style="display:flex; gap:24px; margin-bottom:32px;">
         <div class="dashboard-card">
           <div class="dashboard-card-title">Total Causes</div>
-          <div class="dashboard-card-value" id="totalCausesCard">0</div>
+          <div class="dashboard-card-value" id="totalCausesCard">${totalCauses}</div>
         </div>
         <div class="dashboard-card">
           <div class="dashboard-card-title">Active Causes</div>
-          <div class="dashboard-card-value" id="activeCausesCard">0</div>
+          <div class="dashboard-card-value" id="activeCausesCard">${activeCauses}</div>
         </div>
         <div class="dashboard-card">
           <div class="dashboard-card-title">Past Causes</div>
-          <div class="dashboard-card-value" id="pastCausesCard">0</div>
+          <div class="dashboard-card-value" id="pastCausesCard">${pastCauses}</div>
         </div>
         <div class="dashboard-card">
           <div class="dashboard-card-title">Total Donations</div>
-          <div class="dashboard-card-value" id="totalDonationsCard">RM 0.00</div>
+          <div class="dashboard-card-value" id="totalDonationsCard">RM ${totalDonations}</div>
         </div>
       </div>
       <div class="download-btns" id="reports">
-        <button class="btn btn-primary" id="downloadCSV"><i class="fa fa-download"></i> Download CSV</button>
-        <button class="btn btn-warning" id="downloadPDF"><i class="fa fa-file-pdf-o"></i> Download PDF</button>
+        <form action="DownloadReportsController" method="post">
+          <button type="submit" class="btn btn-primary" name="reportType" value="csv"><i class="fa fa-download"></i> Download CSV</button>
+          <button type="submit" class="btn btn-warning" name="reportType" value="pdf"><i class="fa fa-file-pdf-o"></i> Download PDF</button>
+        </form>
       </div>
       <div class="table-area" id="causes">
         <div class="d-flex justify-content-between align-items-center mb-3">
-          <h4 style="font-weight:700;">Manage Causes</h4>
-          <button class="btn btn-success" id="createCauseBtn">+ Create Cause</button>
+          <button class="btn btn-success" onclick="openCauseModal()">+ Create Cause</button>
         </div>
         <div class="table-responsive">
           <table class="table" id="causesTable">
@@ -258,15 +205,45 @@
                 <th>Title</th>
                 <th>Headline</th>
                 <th>Description</th>
+                <th>Thumbnail</th>
                 <th>Target Amount</th>
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Total Collected</th>
-                <th>Actions</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
-              <!-- Rows will be rendered by JS -->
+              <c:forEach var="cause" items="${causes}">
+                <tr>
+                  <td>${cause.title}</td>
+                  <td>${cause.headline}</td>
+                  <td>${cause.description}</td>
+                  <td>
+                  <img src="${cause.thumbnail}" alt="${cause.title} Thumbnail" style="width: 100px; height: auto; border-radius: 8px;" />
+                  </td>
+                  <td>RM ${cause.targetAmount}</td>
+                  <td>${cause.startDate}</td>
+                  <td>${cause.endDate}</td>
+                  <td>RM ${cause.totalCollected}</td>
+                  <td>${cause.status}</td>
+                  <td>
+                    <form action="EditCauseController" method="get" style="display:inline;">
+                      <input type="hidden" name="causeId" value="${cause.causeId}" />
+                      <button type="submit" class="btn btn-sm btn-warning">Edit</button>
+                    </form>
+                    <form action="DeleteCauseController" method="post" style="display:inline;">
+                      <input type="hidden" name="causeId" value="${cause.causeId}" />
+                      <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this cause?');">Delete</button>
+                    </form>
+                    <form action="UpdateCauseStatusController" method="post" style="display:inline;">
+                            <input type="hidden" name="causeId" value="${cause.causeId}" />
+                            <input type="hidden" name="status" value="${cause.status == 'Active' ? 'Inactive' : 'Active'}" />
+                            <button type="submit" class="btn btn-sm btn-info">${cause.status == 'Active' ? 'Deactivate' : 'Activate'}</button>
+                        </form>
+                  </td>
+                </tr>
+              </c:forEach>
             </tbody>
           </table>
         </div>
@@ -293,39 +270,55 @@
       ">
         <button onclick="closeCauseModal()" style="position:absolute;top:12px;right:18px;background:none;border:none;font-size:2rem;color:#aaa;cursor:pointer;">&times;</button>
         <h3 id="causeModalTitle" style="font-family:'Fredoka',Arial,sans-serif;font-weight:700;color:#6C63FF;text-align:center;margin-bottom:12px;">Create Cause</h3>
-        <form id="causeForm" autocomplete="off" style="width:100%;display:flex;flex-direction:column;gap:10px;">
-          <input type="hidden" name="causeId" />
+        <form action="AddCauseController" method="post" style="width:100%;display:flex;flex-direction:column;gap:10px;" enctype="multipart/form-data">
+       
+          <input type="hidden" name="userId" value="1" />
+		  <input type="hidden" name="status" value="Active" />
+          
+          <div class="form-group">
+            <label style="font-weight:600;">Campaign ID</label>
+            <input type="text" name="causeId" class="form-control" required placeholder="Enter unique Cause ID" style="width:100%;border-radius:8px;padding:8px;">
+          </div>
+          
           <div class="form-group">
             <label style="font-weight:600;">Campaign Name</label>
             <input type="text" name="title" class="form-control" required style="width:100%;border-radius:8px;padding:8px;">
           </div>
+          
           <div class="form-group">
             <label style="font-weight:600;">Thumbnail Image</label>
             <input type="file" name="thumbnail" accept="image/*" class="form-control" required style="width:100%;border-radius:8px;padding:8px;">
             <img id="thumbPreview" style="display:none;margin-top:8px;max-width:100%;border-radius:8px;" />
           </div>
+          
           <div class="form-group">
             <label style="font-weight:600;">Headline</label>
             <input type="text" name="headline" class="form-control" required style="width:100%;border-radius:8px;padding:8px;">
           </div>
+          
           <div class="form-group">
             <label style="font-weight:600;">Description</label>
             <textarea name="description" class="form-control" required style="width:100%;border-radius:8px;padding:8px;min-height:60px;"></textarea>
           </div>
+          
           <div class="form-group" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
             <div>
               <label style="font-weight:600;">Target Amount</label>
               <input type="number" name="targetAmount" class="form-control" required style="width:100%;border-radius:8px;padding:8px;">
             </div>
+            
             <div>
               <label style="font-weight:600;">Start Date</label>
               <input type="date" name="startDate" class="form-control" required style="width:100%;border-radius:8px;padding:8px;">
             </div>
+            
             <div>
               <label style="font-weight:600;">End Date</label>
               <input type="date" name="endDate" class="form-control" required style="width:100%;border-radius:8px;padding:8px;">
             </div>
+            
           </div>
+          
           <button type="submit" id="causeFormSubmitBtn" class="btn btn-primary" style="width:100%;background:#6C63FF;border:none;border-radius:10px;font-weight:700;font-size:1.1rem;padding:12px 0;margin-top:8px;">Create</button>
         </form>
       </div>
@@ -333,165 +326,13 @@
 
     <script src="js/jquery-3.6.0.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.form.js"></script>
-    <script src="js/ajax-form.js"></script>
-    <script src="js/causes.js"></script>
     <script>
-      function formatCurrency(amount) {
-        return 'RM ' + Number(amount).toLocaleString('en-MY', {minimumFractionDigits: 2});
-      }
-
-      function renderCausesTable() {
-        let causes = [];
-        try { causes = JSON.parse(localStorage.getItem('causes')) || []; } catch (e) {}
-        let donations = [];
-        try { donations = JSON.parse(localStorage.getItem('donations')) || []; } catch (e) {}
-        const tbody = document.querySelector('#causesTable tbody');
-        tbody.innerHTML = '';
-        causes.forEach((cause, idx) => {
-          // Use == to match string/number ids
-          let collected = donations.filter(d => d.causeId == cause.id).reduce((sum, d) => sum + Number(d.amount), 0);
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${cause.title}</td>
-            <td>${cause.headline || ''}</td>
-            <td>${cause.description || ''}</td>
-            <td>${formatCurrency(cause.targetAmount || 0)}</td>
-            <td>${cause.startDate}</td>
-            <td>${cause.endDate}</td>
-            <td><b style="color:#6C63FF">${collected ? formatCurrency(collected) : 'RM 0.00'}</b></td>
-            <td>
-              <button class="btn btn-sm btn-warning" onclick="editCause(${idx})">Edit</button>
-              <button class="btn btn-sm btn-danger" onclick="deleteCause(${idx})">Delete</button>
-            </td>
-          `;
-          tbody.appendChild(tr);
-        });
-      }
-
-      function updateDashboardCards() {
-        let causes = [];
-        try { causes = JSON.parse(localStorage.getItem('causes')) || []; } catch (e) {}
-        let donations = [];
-        try { donations = JSON.parse(localStorage.getItem('donations')) || []; } catch (e) {}
-        const now = new Date();
-        // Total Causes
-        document.getElementById('totalCausesCard').textContent = causes.length;
-        // Active Causes
-        document.getElementById('activeCausesCard').textContent = causes.filter(cause => new Date(cause.startDate) <= now && new Date(cause.endDate) >= now).length;
-        // Past Causes
-        document.getElementById('pastCausesCard').textContent = causes.filter(cause => new Date(cause.endDate) < now).length;
-        // Total Donations
-        let total = donations.reduce((sum, d) => sum + Number(d.amount), 0);
-        document.getElementById('totalDonationsCard').textContent = formatCurrency(total);
-      }
-
-      document.addEventListener('DOMContentLoaded', function() {
-        renderCausesTable();
-        updateDashboardCards();
-      });
-      window.addEventListener('donationsUpdated', function() {
-        renderCausesTable();
-        updateDashboardCards();
-      });
-
-      function openCauseModal(editData) {
+      function openCauseModal() {
         document.getElementById('causeModalBg').style.display = 'flex';
-        const form = document.getElementById('causeForm');
-        form.reset();
-        document.getElementById('thumbPreview').style.display = 'none';
-        if (editData) {
-          document.getElementById('causeModalTitle').textContent = 'Edit Cause';
-          document.getElementById('causeFormSubmitBtn').textContent = 'Update';
-          form.causeId.value = editData.id;
-          form.title.value = editData.title;
-          form.headline.value = editData.headline;
-          form.description.value = editData.description;
-          form.targetAmount.value = editData.targetAmount;
-          form.startDate.value = editData.startDate;
-          form.endDate.value = editData.endDate;
-          if (editData.thumbnail) {
-            document.getElementById('thumbPreview').src = editData.thumbnail;
-            document.getElementById('thumbPreview').style.display = 'block';
-          }
-        } else {
-          document.getElementById('causeModalTitle').textContent = 'Create Cause';
-          document.getElementById('causeFormSubmitBtn').textContent = 'Create';
-          form.causeId.value = '';
-        }
       }
+
       function closeCauseModal() {
         document.getElementById('causeModalBg').style.display = 'none';
-      }
-      document.getElementById('createCauseBtn').onclick = function() { openCauseModal(); };
-
-      // Thumbnail preview
-      document.querySelector('#causeForm input[name="thumbnail"]').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function(evt) {
-            document.getElementById('thumbPreview').src = evt.target.result;
-            document.getElementById('thumbPreview').style.display = 'block';
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-
-      // Handle form submit
-      document.getElementById('causeForm').onsubmit = function(e) {
-        e.preventDefault();
-        const form = e.target;
-        const fileInput = form.thumbnail;
-        const file = fileInput.files[0];
-        const isEdit = !!form.causeId.value;
-        function saveCause(thumbnailData) {
-          const cause = {
-            id: isEdit ? Number(form.causeId.value) : Date.now(),
-            title: form.title.value,
-            thumbnail: thumbnailData,
-            headline: form.headline.value,
-            description: form.description.value,
-            targetAmount: form.targetAmount.value,
-            startDate: form.startDate.value,
-            endDate: form.endDate.value
-          };
-          if (isEdit) {
-            updateCause(cause);
-          } else {
-            addCause(cause);
-          }
-          closeCauseModal();
-          renderCausesTable();
-        }
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function(evt) {
-            saveCause(evt.target.result);
-          };
-          reader.readAsDataURL(file);
-        } else {
-          // If editing and no new file, keep old thumbnail
-          if (isEdit) {
-            const causes = getCauses();
-            const old = causes.find(c => c.id === Number(form.causeId.value));
-            saveCause(old ? old.thumbnail : '');
-          } else {
-            alert('Please select a thumbnail image.');
-          }
-        }
-      };
-
-      function editCause(idx) {
-        const causes = getCauses();
-        const cause = causes[idx];
-        openCauseModal(cause);
-      }
-      function deleteCause(id) {
-        if (confirm('Delete this cause?')) {
-          deleteCause(id);
-          renderCausesTable();
-        }
       }
 
       // Sidebar collapse/expand
@@ -505,11 +346,19 @@
           floatingLogo.style.display = 'none';
         }
       };
-      document.getElementById('sidebarToggleFloating').onclick = function() {
-        var sidebar = document.getElementById('sidebar');
-        sidebar.classList.remove('collapsed');
-        document.getElementById('dashboardLogoFloating').style.display = 'none';
-      };
+
+      /*// Thumbnail preview
+      document.querySelector('#causeForm input[name="thumbnail"]').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            document.getElementById('thumbPreview').src = evt.target.result;
+            document.getElementById('thumbPreview').style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        }
+      });*/
     </script>
 </body>
-</html> 
+</html>

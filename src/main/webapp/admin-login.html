@@ -251,16 +251,18 @@
       <div class="split-right">
         <div class="login-card">
           <h3>Admin Login</h3>
-          <form id="adminLoginForm" autocomplete="off">
-            <div class="form-group">
-              <label for="username">Username</label>
-              <i data-lucide="user"></i>
-              <input type="text" class="form-control" id="username" name="username" required autocomplete="username">
-            </div>
+          <form action="LoginController" method="post">
+           <!-- Display error message if exists -->
+            <div id="errorDisplay" class="error-message" style="display: none;"></div>
+           <div class="form-group">
+    <label for="email">Email</label>
+    <i data-lucide="envelope"></i>
+    <input type="email" class="form-control" id="email" name="email" required>
+</div>
             <div class="form-group">
               <label for="password">Password</label>
               <i data-lucide="lock"></i>
-              <input type="password" class="form-control" id="password" name="password" required autocomplete="current-password">
+              <input type="password" class="form-control" id="password" name="password" required>
             </div>
             <button type="submit" class="btn-primary">Login</button>
           </form>
@@ -274,20 +276,6 @@
     </div>
     <script>
       lucide.createIcons();
-      document.getElementById('adminLoginForm').onsubmit = function(e) {
-        e.preventDefault();
-        // Demo: hardcoded credentials
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        if (
-          (username === 'justinbieber' && password === 'hailey') ||
-          (username === 'lalamcchickenzie' && password === 'hailey')
-        ) {
-          window.location.href = 'admin-dashboard.html';
-        } else {
-          alert('Invalid credentials');
-        }
-      };
     </script>
 </body>
 </html> 
