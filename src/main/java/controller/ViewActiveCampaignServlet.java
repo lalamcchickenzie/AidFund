@@ -1,30 +1,31 @@
 package controller;
 
+import dao.CampaignDAO;
+import model.Campaign;
+import admin.ConnectionManager;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
-import dao.CampaignDAO;
-import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import model.Campaign;
-import util.DBConnection;
-
 @WebServlet("/viewActiveCampaign")
 public class ViewActiveCampaignServlet extends HttpServlet {
-    @Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try (Connection conn = DBConnection.getConnection()) {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        try {
+            Connection conn = ConnectionManager.getConnection();
+
             CampaignDAO dao = new CampaignDAO(conn);
             List<Campaign> activeCampaigns = dao.getAllCampaigns("active");
 
             request.setAttribute("activeCampaigns", activeCampaigns);
-            RequestDispatcher rd = request.getRequestDispatcher("ViewActiveCampaign.jsp");
-            rd.forward(request, response);
+            request.getRequestDispatcher("ViewActiveCampaign.jsp").forward(request, response);
+
+            conn.close();
         } catch (Exception e) {
             e.printStackTrace();
             response.getWriter().println("Database error: " + e.getMessage());
