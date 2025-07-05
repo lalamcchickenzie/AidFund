@@ -83,7 +83,7 @@ public class AddCauseController extends HttpServlet {
             thumbnailPart.write(uploadsDir + File.separator + thumbnailPart.getSubmittedFileName());
             if (exists) {
 	            request.setAttribute("errorMessage", "Cause ID already exists. Please choose another.");
-	            request.getRequestDispatcher("admin-dashboard.jsp").forward(request, response);
+	            request.getRequestDispatcher("dashboard.jsp").forward(request, response);
 	        } else {
             // Create a new Cause object
     		Cause cause = new Cause();

@@ -32,7 +32,7 @@ public class LoginController extends HttpServlet {
                 HttpSession session = request.getSession(true);
                 session.setAttribute("userID", admin.getUserID());
                 session.setAttribute("email", admin.getEmail());
-                response.sendRedirect("admin-dashboard.html"); 
+                response.sendRedirect("dashboard.jsp"); 
             } else {
                 // Forward to login page with error message
                 request.setAttribute("errorMessage", "Invalid email or password. Please try again.");

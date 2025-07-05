@@ -1,9 +1,11 @@
-<!doctype html>
-<html class="no-js" lang="zxx">
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <!-- <meta http-equiv="x-ua-compatible" content="ie=edge"> -->
     <title>AidFund+</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -99,6 +101,14 @@
         width: 20px;
         height: 20px;
       }
+      .user-topbar .profile {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+      .user-topbar .profile img {
+        width: 36px; height: 36px; border-radius: 50%;
+      }
       .main-content-user {
         margin-top: 0 !important;
         padding-top: 0 !important;
@@ -111,6 +121,19 @@
         padding: 32px;
         margin-bottom: 32px;
       }
+     .modal-backdrop.fade {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  z-index: 1040;
+}
+
+.modal-backdrop.show {
+  opacity: 0.5;
+}
+
+.modal {
+  z-index: 1050;
+}
       h1, h2, h3, h4, h5, h6 {
         font-family: 'Fredoka', Arial, sans-serif;
       }
@@ -124,16 +147,12 @@
 </head>
 
 <body>
-    <!--[if lte IE 9]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-        <![endif]-->
-
     <div class="user-topbar">
       <div class="brand">AidFund<span class="plus">+</span></div>
       <nav>
         <a href="index.html"><i data-lucide="home"></i>Home</a>
-        <a href="blog.html" class="active"><i data-lucide="book-open"></i>History</a>
-        <a href="Cause.html"><i data-lucide="heart"></i>Causes</a>
+        <a href="donationHistory.html"><i data-lucide="book-open"></i>History</a>
+        <a href="causePage" class="active"><i data-lucide="heart"></i>Causes</a>
         <a href="admin-login.html" class="admin-login-btn"><i data-lucide="user-shield"></i>Login as Admin</a>
       </nav>
     </div>
@@ -141,41 +160,164 @@
       lucide.createIcons();
     </script>
     <div class="main-content-user">
-
     <!-- bradcam_area_start  -->
     <div class="bradcam_area breadcam_bg overlay2 d-flex align-items-center justify-content-center">
         <div class="container">
             <div class="row">
                 <div class="col-xl-12">
                     <div class="bradcam_text text-center">
-                        <h3>D O N A T I O N H I S T O R Y</h3>
+                        <h3>Causes</h3>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+ </div>
+
     <!-- bradcam_area_end  -->
 
-
-      <!-- Donation History Search Area -->
-        <section class="section-padding">
-            <div class="container">
-                <div class="search-container">
-                    <input 
-                        type="text" 
-                        id="searchInput" 
-                        class="form-control search-input" 
-                        placeholder="Enter Donation Reference ID..." 
-                        aria-label="Search donation history by reference ID"
-                        onkeyup="searchDonation()" 
-                        autocomplete="off"
-                    />
+    <!-- ===== Causes Section ===== -->
+    <section class="causes-section" style="padding: 40px 0;">
+        <div class="container">
+        <h3 class="section-title" style="text-align:center; margin-bottom: 32px;">ACTIVE CAUSES</h3>
+        
+        <c:if test="${empty causes}">
+            <p class="text-center text-danger">No active campaigns available at the moment.</p>
+        </c:if>
+        
+        <div id="causesGrid" class="row" style="margin-bottom: 40px;">
+             <c:forEach var="cause" items="${causes}">
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                    
+                        <c:choose>
+                            <c:when test="${not empty cause.thumbnail}">
+                                <img src="${cause.thumbnail}" class="card-img-top" alt="Cause Image" style="height:200px; object-fit:cover;">
+                            </c:when>
+                            <c:otherwise>
+                            <div style="height:200px; background:#eee; display:flex; align-items:center; justify-content:center;">
+                                    <span style="color:#bbb;">No Image</span>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+                        
+                        <div class="card-body">
+                            <h5 class="card-title">${cause.title}</h5>
+                            <p class="card-text">${cause.description}</p>
+                            <p><strong>Target:</strong> RM ${cause.targetAmount}</p>
+							<p><strong>Start Date:</strong> ${cause.startDate}</p>
+   						 <p><strong>End Date:</strong> ${cause.endDate}</p>    
+   						 <button type="button" class="btn btn-primary open-donation-modal"data-title="${cause.title}" data-cause-id="${cause.causeId}">
+           				 Donate Now
+         				 </button>
+   					 </div>
                 </div>
-                <div id="donationList" aria-live="polite" aria-atomic="true"></div>
             </div>
-        </section>
+          </c:forEach>
+        </div>
     </div>
-    
+ </section>
+  
+
+   
+  <!-- ===== Make a Donation Section ===== -->
+  <!--  
+    <div data-scroll-index='1' class="make_donation_area section_padding">
+        <div class="container">
+            <div class="row justify-content-center">
+          <div class="col-lg-8">
+                    <div class="section_title text-center mb-55">
+                        <h3><span>Make a Donation</span></h3>
+                    </div>
+                </div>
+            </div>
+            
+        <form id="mainDonationForm" style="max-width:500px; margin:auto;">
+          <div class="form-group mb-3">
+            <label for="donationAmount"><b>Amount (RM)</b></label>
+            <div style="display:flex; gap:8px; margin-bottom:8px;">
+              <button type="button" class="btn btn-outline-primary preset-amount" data-amount="10" style="flex:1;">10</button>
+              <button type="button" class="btn btn-outline-primary preset-amount" data-amount="50" style="flex:1;">50</button>
+              <button type="button" class="btn btn-outline-primary preset-amount" data-amount="other" style="flex:1;">Other</button>
+            </div>
+            <input type="number" class="form-control" id="amount" name="amount" min="1" required placeholder="Enter amount">
+            </div>
+          <div class="form-group mb-3">
+            <label for="causeSelect"><b>Select Cause</b></label>
+            <select id="causeSelect" name="causeId" class="form-control" required>
+              <option value="">Choose a cause...</option>
+ 			<c:forEach var="cause" items="${causeList}">
+   				 <option value="${cause.causeId}">${cause.title}</option>
+			</c:forEach>
+            </select>
+           </div>
+          <button type="button" id="openDonorModal" class="btn" style="background:#6C63FF; color:#fff; font-weight:700; border-radius:10px; padding:12px 32px; font-size:1.1em; width:100%;">Donate Now</button>
+        </form>
+       </div>
+    </div> -->
+
+
+
+	<!-- Donation Modal -->
+<div id="donorModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.18); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:#fff; border-radius:18px; max-width:400px; width:95%; padding:32px 24px; position:relative; max-height:90vh; overflow-y:auto;">
+    <button id="closeDonorModal" style="position:absolute; top:16px; right:16px; background:none; border:none; font-size:1.5em;">&times;</button>
+    <h3 style="text-align:center;">Donor Details</h3>
+
+    <form id="donorForm" action="addDonation" method="post">
+      <!-- Show title readonly -->
+      <div class="form-group mb-3">
+        <label>Cause</label>
+        <input type="text" class="form-control" id="modalCauseTitle" readonly style="background:#f4f4f4;">
+      </div>
+      <input type="hidden" name="causeId" id="modalCauseId">
+
+      <div class="form-group mb-3">
+        <label>Name</label>
+        <input type="text" class="form-control" name="Dname" required>
+      </div>
+      <div class="form-group mb-3">
+        <label>Email</label>
+        <input type="email" class="form-control" name="Demail" required>
+      </div>
+      <div class="form-group mb-3">
+        <label>Phone</label>
+        <input type="tel" class="form-control" name="Dphone" required>
+      </div>
+      <div class="form-group mb-3">
+        <label>Amount (RM)</label>
+        <input type="number" class="form-control" name="amount" required min="10">
+      </div>
+
+      <div class="form-group text-center">
+        <button type="submit" class="btn btn-success">Donate</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Thank You Modal -->
+<div class="modal fade" id="thankYouModal" tabindex="-1" aria-labelledby="thankYouModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 16px;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="thankYouModalLabel">Thank You!</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background:none; border:none; font-size:1.5rem;">&times;</button>
+      </div>
+      <div class="modal-body text-center">
+        <p class="mb-2">${success}</p>
+        <p>Your Reference ID:</p>
+        <div style="font-weight: bold; color: #6C63FF; font-size: 1.2rem;">${refId}</div>
+        <p style="font-size: 0.9rem; color: #777;">Please save this ID to track your donation.</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
     <!-- footer_start  -->
     <footer class="footer">
         <div class="footer_top">
@@ -249,34 +391,7 @@
         </div>
     </footer>
     <!-- footer_end  -->
-
     <!-- JS here -->
-    <script>
-    function searchDonation() {
-      const refId = document.getElementById('searchInput').value.trim();
-      const resultDiv = document.getElementById('donationList');
-      let donations = [];
-      try {
-        donations = JSON.parse(localStorage.getItem('donations')) || [];
-      } catch (e) {}
-
-      const d = donations.find(donation => donation.refId === refId);
-      if (d) {
-        resultDiv.innerHTML = `
-          <div class="card-section">
-            <b>Name:</b> ${d.donorName || d.name || ''}<br>
-            <b>Email:</b> ${d.donorEmail || d.email || ''}<br>
-            <b>Telephone:</b> ${d.donorPhone || d.phone || ''}<br>
-            <b>Amount:</b> RM ${d.amount}<br>
-            <b>Date:</b> ${d.date}<br>
-            <b>Reference ID:</b> ${d.refId}
-          </div>
-        `;
-      } else {
-        resultDiv.innerHTML = `<div class="card-section" style="color:#a51d23;">Reference ID not found.</div>`;
-      }
-    }
-</script>
     <script src="js/vendor/modernizr-3.5.0.min.js"></script>
     <script src="js/vendor/jquery-1.12.4.min.js"></script>
     <script src="js/popper.min.js"></script>
@@ -288,6 +403,7 @@
     <script src="js/jquery.counterup.min.js"></script>
     <script src="js/imagesloaded.pkgd.min.js"></script>
     <script src="js/scrollIt.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/jquery.scrollUp.min.js"></script>
     <script src="js/wow.min.js"></script>
     <script src="js/nice-select.min.js"></script>
@@ -295,33 +411,43 @@
     <script src="js/jquery.magnific-popup.min.js"></script>
     <script src="js/plugins.js"></script>
     <script src="js/gijgo.min.js"></script>
-
-    <!--contact js-->
-    <script src="js/contact.js"></script>
-    <script src="js/jquery.ajaxchimp.min.js"></script>
-    <script src="js/jquery.form.js"></script>
-    <script src="js/jquery.validate.min.js"></script>
-    <script src="js/mail-script.js"></script>
-
     <script src="js/main.js"></script>
+    <div id="causesSection"></div>
+    <script src="js/causes.js"></script>    
+    
     <script>
-        $('.datepicker').datepicker({
-            iconsLibrary: 'fontawesome',
-            icons: {
-                rightIcon: '<span class="fa fa-calendar"></span>'
-            }
-        });
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".open-donation-modal").forEach(btn => {
+      btn.addEventListener("click", function () {
+        const title = this.dataset.title;
+        const causeId = this.dataset["causeId"];
 
-        $('.timepicker').timepicker({
-            iconsLibrary: 'fontawesome',
-            icons: {
-                rightIcon: '<span class="fa fa-clock-o"></span>'
-            }
-        });
-    $(document).ready(function() {
-    $('.js-example-basic-multiple').select2();
-});
-  
-    </script>
+        document.getElementById("modalCauseTitle").value = title;
+        document.getElementById("modalCauseId").value = causeId;
+
+        document.getElementById("donorModal").style.display = "flex";
+      });
+    });
+
+    document.getElementById("closeDonorModal").addEventListener("click", function () {
+      document.getElementById("donorModal").style.display = "none";
+    });
+  });
+</script>
+
+<c:if test="${showThankYou}">
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const thankYouModal = new bootstrap.Modal(document.getElementById('thankYouModal'));
+      thankYouModal.show();
+      document.getElementById('thankYouModal').addEventListener('hidden.bs.modal', function () {
+        document.getElementById('donorForm')?.reset();
+        document.getElementById('donorModal').style.display = 'none';
+      });
+    });
+  </script>
+</c:if>
+
+
 </body>
 </html>

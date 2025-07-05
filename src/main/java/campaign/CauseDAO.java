@@ -6,11 +6,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import campaign.ConnectionManager;
+import campaign.Cause;
 
 
 public class CauseDAO {
-	private static Connection conn = null;
-
+	private static Connection con = null;
+	private static PreparedStatement ps = null;
+	private static ResultSet rs = null;
+	
     public static List<Cause> getAllCauses() throws SQLException {
         List<Cause> campaign = new ArrayList<>();
         try {
@@ -18,9 +22,10 @@ public class CauseDAO {
                 "FROM campaign c " +
                 "LEFT JOIN donation d ON c.campaignID = d.campaignID " +
                 "GROUP BY c.campaignID";
-		conn = ConnectionManager.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        ResultSet rs = stmt.executeQuery();
+        
+		con = ConnectionManager.getConnection();
+        ps = con.prepareStatement(sql);
+        rs = ps.executeQuery();
         while (rs.next()) {
             Cause c = new Cause();
             c.setCauseId(rs.getString("campaignID"));
@@ -37,32 +42,67 @@ public class CauseDAO {
             c.setTotalCollected(rs.getDouble("totalCollected")); 
             campaign.add(c);
         }
-        stmt.close();
+        ps.close();
     	}catch (SQLException e) {
     		e.printStackTrace();
     	}
         return campaign;
     }
+    
+    public static List<Cause> getActiveCausesDonor() throws Exception {
+        List<Cause> activeCauses = new ArrayList<>();
+
+        String sql = "SELECT * FROM campaign WHERE status = 'Active'";
+
+        try {
+        	con = ConnectionManager.getConnection();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+            	Cause c = new Cause();
+                c.setCauseId(rs.getString("campaignID"));
+                c.setTitle(rs.getString("title"));
+                c.setDescription(rs.getString("description"));
+                c.setHeadline(rs.getString("headline"));
+                c.setTargetAmount(rs.getDouble("targetAmount"));
+                c.setStartDate(rs.getDate("startDate"));
+                c.setEndDate(rs.getDate("endDate"));
+                c.setStatus(rs.getString("status"));
+                c.setThumbnail(rs.getString("thumbnail"));
+                activeCauses.add(c);
+            }
+            System.out.println("Total active causes fetched: " + activeCauses.size());
+            for (Cause c : activeCauses) {
+                System.out.println("Title: " + c.getTitle());
+            }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+        return activeCauses;
+    }
+
 
     public static void addCause(Cause c) throws SQLException {
     	try {
         String sql = "INSERT INTO campaign (campaignID, title, description, headline, targetAmount, startDate, endDate, status, thumbnail, userID) VALUES (?,?,?, ?, ?, ?, ?, ?, ?, ?)";
-    	conn = ConnectionManager.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setString(1, c.getCauseId()); 
-        stmt.setString(2, c.getTitle());
-        stmt.setString(3, c.getDescription());
-        stmt.setString(4, c.getHeadline());
-        stmt.setDouble(5, c.getTargetAmount());
-        stmt.setDate(6, c.getStartDate());
-        stmt.setDate(7, c.getEndDate());
-        stmt.setString(8, c.getStatus());
-        stmt.setString(9, c.getThumbnail());
-        stmt.setInt(10, c.getUserId());
+    	con = ConnectionManager.getConnection();
+        ps = con.prepareStatement(sql);
+        ps.setString(1, c.getCauseId()); 
+        ps.setString(2, c.getTitle());
+        ps.setString(3, c.getDescription());
+        ps.setString(4, c.getHeadline());
+        ps.setDouble(5, c.getTargetAmount());
+        ps.setDate(6, c.getStartDate());
+        ps.setDate(7, c.getEndDate());
+        ps.setString(8, c.getStatus());
+        ps.setString(9, c.getThumbnail());
+        ps.setInt(10, c.getUserId());
 
         System.out.print(sql);
-        stmt.executeUpdate();
-        stmt.close();
+        ps.executeUpdate();
+        ps.close();
     }
     	catch (SQLException e) {
     		e.printStackTrace();
@@ -72,19 +112,19 @@ public class CauseDAO {
     public static void updateCause(Cause c) throws SQLException {
     	try {
         String sql = "UPDATE campaign SET title=?, description=?, headline=?, targetAmount=?, startDate=?, endDate=?, status=?, userID=? WHERE campaignID=?";
-		conn = ConnectionManager.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setString(1, c.getTitle());
-        stmt.setString(2, c.getDescription());
-        stmt.setString(3, c.getHeadline());
-        stmt.setDouble(3, c.getTargetAmount());
-        stmt.setDate(4, c.getStartDate());
-        stmt.setDate(5, c.getEndDate());
-        stmt.setString(6, c.getStatus());
-        stmt.setString(7,  c.getCauseId());
-        stmt.setInt(8, c.getUserId());
-        stmt.executeUpdate();
-        stmt.close();
+		con = ConnectionManager.getConnection();
+        ps = con.prepareStatement(sql);
+        ps.setString(1, c.getTitle());
+        ps.setString(2, c.getDescription());
+        ps.setString(3, c.getHeadline());
+        ps.setDouble(4, c.getTargetAmount());
+        ps.setDate(5, c.getStartDate());
+        ps.setDate(6, c.getEndDate());
+        ps.setString(7, c.getStatus());
+        ps.setInt(8, c.getUserId());
+        ps.setString(9,  c.getCauseId());
+        ps.executeUpdate();
+        ps.close();
 	} catch (SQLException e) {
 		e.printStackTrace();
 	}
@@ -93,24 +133,24 @@ public class CauseDAO {
     public static void deleteCause(String causeId) throws SQLException {
     	try {
         String sql = "DELETE FROM campaign WHERE campaignID=?";
-		conn = ConnectionManager.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setString(1, causeId);
-        stmt.executeUpdate();
-        stmt.close();
+		con = ConnectionManager.getConnection();
+        ps = con.prepareStatement(sql);
+        ps.setString(1, causeId);
+        ps.executeUpdate();
+        ps.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-    public static Cause getCauseId(String causeId) throws SQLException {
+    public static Cause getCauseId(String causeId) throws SQLException { //Get cause by ID
 		Cause c = null;
 
 		try {
 			String sql = "SELECT * FROM campaign WHERE campaignID = ?";
-			conn = ConnectionManager.getConnection();
-			PreparedStatement ps = conn.prepareStatement(sql);
+			con = ConnectionManager.getConnection();
+			ps = con.prepareStatement(sql);
 			ps.setString(1, causeId);
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 
 			if (rs.next()) {
 				c = new Cause();
@@ -133,12 +173,14 @@ public class CauseDAO {
 		return c;
 	}
 
-    public void updateCauseStatus(int causeId, String status) {
+    public void updateCauseStatus(String causeId, String status) {
         String sql = "UPDATE campaign SET status = ? WHERE campaignID = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, status);
-            stmt.setInt(2, causeId);
-            stmt.executeUpdate();
+		con = ConnectionManager.getConnection();
+        try {
+        	ps = con.prepareStatement(sql);
+        	ps.setString(1, status);
+        	ps.setString(2, causeId);
+        	ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -146,11 +188,11 @@ public class CauseDAO {
     public static boolean doesCauseIdExist(String causeId) {
         boolean exists = false;
         try {
-            Connection con = ConnectionManager.getConnection();
             String sql = "SELECT campaignID FROM campaign WHERE campaignID = ?";
-            PreparedStatement ps = con.prepareStatement(sql);
+    		con = ConnectionManager.getConnection();
+            ps = con.prepareStatement(sql);
             ps.setString(1, causeId);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             exists = rs.next(); // if there's a record, ID exists
             con.close();
         } catch (SQLException e) {
@@ -158,5 +200,108 @@ public class CauseDAO {
         }
         return exists;
     }
+    
+    public static int getTotalCauses() throws SQLException {
+        int total = 0;
+        String sql = "SELECT COUNT(*) FROM campaign";
+		con = ConnectionManager.getConnection();
+        try {
+        		ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                total = rs.getInt(1);
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+
+    public static int getCountActiveCauses() throws SQLException { //to display on top of admin dashboard
+        int total = 0;
+        String sql = "SELECT COUNT(*) FROM campaign WHERE CURDATE() BETWEEN startDate AND endDate";
+		con = ConnectionManager.getConnection();
+        try (
+             PreparedStatement stmt = con.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                total = rs.getInt(1);
+            }
+        }
+        return total;
+    }
+
+    public static int getCountPastCauses() throws SQLException {
+        int total = 0;
+        String sql = "SELECT COUNT(*) FROM campaign WHERE endDate < CURDATE()";
+		con = ConnectionManager.getConnection();
+        try (
+             PreparedStatement stmt = con.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                total = rs.getInt(1);
+            }
+        }
+        return total;
+    }
+
+    public static List<Cause> getActiveCauses() {
+        List<Cause> causes = new ArrayList<>();
+        
+        String sql = "SELECT * FROM campaign WHERE CURRENT_DATE BETWEEN startDate AND endDate";
+		con = ConnectionManager.getConnection();
+
+        try {
+        	ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Cause cause = new Cause();
+                cause.setCauseId(rs.getString("causeId"));
+                cause.setTitle(rs.getString("title"));
+                cause.setDescription(rs.getString("description"));
+                cause.setTargetAmount(rs.getDouble("targetAmount"));
+                cause.setStartDate(rs.getDate("startDate"));
+                cause.setEndDate(rs.getDate("endDate"));
+                cause.setThumbnail(rs.getString("thumbnail")); 
+                causes.add(cause);
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return causes;
+    }
+
+
+    public static Cause getActiveCauseById(String causeId) {
+        Cause cause = null;
+
+        String sql = "SELECT * FROM campaign WHERE campaignID = ? AND CURRENT_DATE BETWEEN startDate AND endDate";
+		con = ConnectionManager.getConnection();
+
+        try {
+        	ps = con.prepareStatement(sql);
+            ps.setString(1, causeId);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                cause = new Cause();
+                cause.setCauseId(rs.getString("causeId"));
+                cause.setTitle(rs.getString("title"));
+                cause.setDescription(rs.getString("description"));
+                cause.setTargetAmount(rs.getDouble("targetAmount"));
+                cause.setStartDate(rs.getDate("startDate"));
+                cause.setEndDate(rs.getDate("endDate"));
+                cause.setThumbnail(rs.getString("thumbnail")); 
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return cause;
+    }
+
 
    }

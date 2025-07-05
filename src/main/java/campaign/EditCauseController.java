@@ -36,7 +36,7 @@ public class EditCauseController extends HttpServlet {
 		String causeId = request.getParameter("causeId");
 		Cause existCause = CauseDAO.getCauseId(causeId);
 		request.setAttribute("cause", existCause);
-		RequestDispatcher dispatcher = request.getRequestDispatcher("editCause");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("editCause.jsp");
 		dispatcher.forward(request, response);
 	}
 }

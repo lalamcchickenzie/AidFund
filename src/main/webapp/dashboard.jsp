@@ -136,12 +136,70 @@
         z-index: 102;
         position: relative;
       }
+      .sidebar.collapsed ~ .dashboard-logo-floating #sidebarToggleFloating {
+        display: inline-block;
+      }
+      #sidebarToggleFloating {
+        background: none;
+        border: none;
+        font-size: 1.7rem;
+        cursor: pointer;
+        outline: none;
+        margin-right: 8px;
+        display: none;
+      }
       @media (max-width: 700px) {
         .sidebar { width: 100vw; border-radius: 0; }
         .sidebar.collapsed { width: 0; }
         .dashboard-content { margin-left: 0; }
         .sidebar.collapsed ~ .dashboard-content { margin-left: 0; }
         .topbar { margin-left: 0; }
+      }
+      .dashboard-cards {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 32px;
+      }
+      .dashboard-card {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        padding: 24px 32px;
+        flex: 1;
+        min-width: 180px;
+        text-align: center;
+      }
+      .dashboard-card h4 {
+        font-size: 1.1rem;
+        color: #888;
+        margin-bottom: 8px;
+      }
+      .dashboard-card .count {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #4b49ac;
+      }
+      .table-area {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        padding: 24px;
+      }
+      .btn-primary, .btn-success, .btn-danger, .btn-warning {
+        border-radius: 8px;
+        font-weight: 600;
+      }
+      .table thead th {
+        background: #f6f8fb;
+        border: none;
+      }
+      .table tbody tr {
+        border-top: 1px solid #f0f0f0;
+      }
+      .download-btns {
+        margin-bottom: 18px;
+        display: flex;
+        gap: 12px;
       }
     </style>
 </head>
@@ -151,7 +209,7 @@
       <button id="sidebarToggle" title="Toggle Menu">&#9776;</button>
       <ul id="sidebarMenu">
 		<li><a href="dashboard.jsp" class="active"><i class="fa fa-tachometer"></i> Dashboard</a></li>
-        <li><a href="ListCauseController"><i class="fa fa-heart"></i> Causes</a></li>
+        <li><a href="Cause.jsp"><i class="fa fa-heart"></i> Causes</a></li>
         <li><a href="report.jsp"><i class="fa fa-file"></i> Reports</a></li>
 		<li><a href="LogoutController"><i class="fa fa-sign-out"></i> Logout</a></li>
       </ul>
@@ -336,17 +394,34 @@
       }
 
       // Sidebar collapse/expand
-      document.getElementById('sidebarToggle').onclick = function() {
-        var sidebar = document.getElementById('sidebar');
-        sidebar.classList.toggle('collapsed');
-        var floatingLogo = document.getElementById('dashboardLogoFloating');
-        if (sidebar.classList.contains('collapsed')) {
-          floatingLogo.style.display = 'flex';
-        } else {
-          floatingLogo.style.display = 'none';
-        }
-      };
+      function toggleSidebar() {
+  var sidebar = document.getElementById('sidebar');
+  var floatingLogo = document.getElementById('dashboardLogoFloating');
+  sidebar.classList.toggle('collapsed');
+  if (sidebar.classList.contains('collapsed')) {
+    floatingLogo.style.display = 'flex';
+  } else {
+    floatingLogo.style.display = 'none';
+  }
+}
 
+document.getElementById('sidebarToggle').onclick = toggleSidebar;
+document.getElementById('sidebarToggleFloating').onclick = toggleSidebar;
+
+//Highlight active link in sidebar
+window.addEventListener('DOMContentLoaded', function () {
+  var currentPath = window.location.pathname.split('/').pop(); // Get filename only
+  var sidebarLinks = document.querySelectorAll('#sidebarMenu a');
+
+  sidebarLinks.forEach(function (link) {
+    var linkPath = link.getAttribute('href');
+    if (linkPath === currentPath) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
+});
       /*// Thumbnail preview
       document.querySelector('#causeForm input[name="thumbnail"]').addEventListener('change', function(e) {
         const file = e.target.files[0];

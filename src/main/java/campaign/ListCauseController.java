@@ -34,7 +34,7 @@ try {
 	private void listCause(HttpServletRequest request, HttpServletResponse response)throws SQLException, ServletException, IOException {
 	List<Cause> campaign = CauseDAO.getAllCauses();
 	request.setAttribute("causes", campaign);
-	RequestDispatcher dispatcher = request.getRequestDispatcher("dashboard.jsp");
+	RequestDispatcher dispatcher = request.getRequestDispatcher("Cause.jsp");
 	dispatcher.forward(request, response);
 	}
 }

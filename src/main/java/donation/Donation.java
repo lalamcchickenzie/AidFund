@@ -1,6 +1,9 @@
 package donation;
 
 import java.io.Serializable;
+import java.sql.Date;
+
+import donor.Donor;
 
 public class Donation implements Serializable{
     /**
@@ -8,24 +11,19 @@ public class Donation implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private String donationID;
-	private String refId;
     private double amount;
-    private String date;
+    private Date donationDate;
     private String paymentMethod;
+    private String causeId;
+    private int donorID;
+    private Donor donor;
 
     // Default constructor
     public Donation() {
     }
 
     // Getters and Setters
-    public String getRefId() {
-        return refId;
-    }
-
-    public void setRefId(String refId) {
-        this.refId = refId;
-    }
-
+   
     public double getAmount() {
         return amount;
     }
@@ -34,13 +32,6 @@ public class Donation implements Serializable{
         this.amount = amount;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
 
 	public String getPaymentMethod() {
 		return paymentMethod;
@@ -56,5 +47,37 @@ public class Donation implements Serializable{
 
 	public void setDonationID(String donationID) {
 		this.donationID = donationID;
+	}
+
+	public String getCauseId() {
+		return causeId;
+	}
+
+	public void setCauseId(String causeId) {
+		this.causeId = causeId;
+	}
+
+	public Date getDonationDate() {
+		return donationDate;
+	}
+
+	public void setDonationDate(Date donationDate) {
+		this.donationDate = donationDate;
+	}
+
+	public int getDonorID() {
+		return donorID;
+	}
+
+	public void setDonorID(int donorID) {
+		this.donorID = donorID;
+	}
+
+	public Donor getDonor() {
+		return donor;
+	}
+
+	public void setDonor(Donor donor) {
+		this.donor = donor;
 	}
 }
