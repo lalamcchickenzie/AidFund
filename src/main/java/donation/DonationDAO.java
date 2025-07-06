@@ -26,7 +26,7 @@ public class DonationDAO {
             d.setDonationID(rs.getString("donationID"));
             d.setAmount(rs.getDouble("amount"));
             d.setDonationDate(rs.getDate("donationDate"));
-            d.setCauseId(rs.getString("causeId"));
+            d.setCauseId(rs.getString("campaignID"));
             d.setDonorID(rs.getInt("donorID"));
             donation.add(d);
         }
@@ -109,6 +109,51 @@ public class DonationDAO {
 		        }
 		    }
 		    return total;
+		}
+
+	  public static List<Donation> getDonationsByMonth(int month, int year) throws SQLException {
+		    List<Donation> list = new ArrayList<>();
+		    String sql = "SELECT * FROM donation WHERE MONTH(donationDate) = ? AND YEAR(donationDate) = ?";
+
+		    try (Connection conn = ConnectionManager.getConnection();
+		         PreparedStatement ps = conn.prepareStatement(sql)) {
+		        ps.setInt(1, month);
+		        ps.setInt(2, year);
+		        ResultSet rs = ps.executeQuery();
+
+		        while (rs.next()) {
+		            Donation d = new Donation();
+		            d.setDonationID(rs.getString("donationID"));
+		            d.setAmount(rs.getDouble("amount"));
+		            d.setDonationDate(rs.getDate("donationDate"));
+		            d.setCauseId(rs.getString("campaignID"));
+		            d.setDonorID(rs.getInt("donorID"));
+		            list.add(d);
+		        }
+		    }
+		    return list;
+		}
+
+	  public static List<Donation> getDonationsByCampaign(String causeId) throws SQLException {
+		    List<Donation> list = new ArrayList<>();
+		    String sql = "SELECT * FROM donation WHERE campaignID = ?";
+
+		    try (Connection conn = ConnectionManager.getConnection();
+		         PreparedStatement ps = conn.prepareStatement(sql)) {
+		        ps.setString(1, causeId);
+		        ResultSet rs = ps.executeQuery();
+
+		        while (rs.next()) {
+		            Donation d = new Donation();
+		            d.setDonationID(rs.getString("donationID"));
+		            d.setAmount(rs.getDouble("amount"));
+		            d.setDonationDate(rs.getDate("donationDate"));
+		            d.setCauseId(rs.getString("campaignID"));
+		            d.setDonorID(rs.getInt("donorID"));
+		            list.add(d);
+		        }
+		    }
+		    return list;
 		}
 
 

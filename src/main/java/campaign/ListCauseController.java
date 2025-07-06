@@ -14,7 +14,7 @@ import java.util.List;
 To Display List of Causes
 by Nawal 
  */
-@WebServlet("/ListCauseController")
+@WebServlet("/Cause")
 public class ListCauseController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        

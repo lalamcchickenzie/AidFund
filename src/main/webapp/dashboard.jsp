@@ -209,7 +209,7 @@
       <button id="sidebarToggle" title="Toggle Menu">&#9776;</button>
       <ul id="sidebarMenu">
 		<li><a href="dashboard.jsp" class="active"><i class="fa fa-tachometer"></i> Dashboard</a></li>
-        <li><a href="Cause.jsp"><i class="fa fa-heart"></i> Causes</a></li>
+        <li><a href="Cause"><i class="fa fa-heart"></i> Causes</a></li>
         <li><a href="report.jsp"><i class="fa fa-file"></i> Reports</a></li>
 		<li><a href="LogoutController"><i class="fa fa-sign-out"></i> Logout</a></li>
       </ul>
@@ -407,33 +407,6 @@
 
 document.getElementById('sidebarToggle').onclick = toggleSidebar;
 document.getElementById('sidebarToggleFloating').onclick = toggleSidebar;
-
-//Highlight active link in sidebar
-window.addEventListener('DOMContentLoaded', function () {
-  var currentPath = window.location.pathname.split('/').pop(); // Get filename only
-  var sidebarLinks = document.querySelectorAll('#sidebarMenu a');
-
-  sidebarLinks.forEach(function (link) {
-    var linkPath = link.getAttribute('href');
-    if (linkPath === currentPath) {
-      link.classList.add('active');
-    } else {
-      link.classList.remove('active');
-    }
-  });
-});
-      /*// Thumbnail preview
-      document.querySelector('#causeForm input[name="thumbnail"]').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function(evt) {
-            document.getElementById('thumbPreview').src = evt.target.result;
-            document.getElementById('thumbPreview').style.display = 'block';
-          };
-          reader.readAsDataURL(file);
-        }
-      });*/
     </script>
 </body>
 </html>

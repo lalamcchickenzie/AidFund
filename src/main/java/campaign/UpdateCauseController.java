@@ -73,6 +73,6 @@ public class UpdateCauseController extends HttpServlet {
             return;
         }
 
-        response.sendRedirect("ListCauseController");
+        response.sendRedirect("Cause");
     }
 }

@@ -32,6 +32,6 @@ public class DeleteCauseController extends HttpServlet {
             return;
         }
 
-        response.sendRedirect("ListCauseController"); // or dashboard.jsp
+        response.sendRedirect("Cause"); // or dashboard.jsp
     }
 }

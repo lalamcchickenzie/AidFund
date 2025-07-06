@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-    <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
     
 <!DOCTYPE html>
 
@@ -210,8 +210,8 @@
       <div class="brand">AidFund<span class="plus" style="color:#a32020; font-weight:700;">+</span></div>
       <button id="sidebarToggle" title="Toggle Menu">&#9776;</button>
       <ul id="sidebarMenu">
-		<li><a href="dashboard.jsp" class="active"><i class="fa fa-tachometer"></i> Dashboard</a></li>
-        <li><a href="Cause.jsp"><i class="fa fa-heart"></i> Causes</a></li>
+		<li><a href="dashboard.jsp"><i class="fa fa-tachometer"></i> Dashboard</a></li>
+        <li><a href="Cause"class="active"><i class="fa fa-heart"></i> Causes</a></li>
         <li><a href="report.jsp"><i class="fa fa-file"></i> Reports</a></li>
 		<li><a href="LogoutController"><i class="fa fa-sign-out"></i> Logout</a></li>
       </ul>

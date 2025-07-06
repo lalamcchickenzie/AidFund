@@ -151,7 +151,7 @@
       <div class="brand">AidFund<span class="plus">+</span></div>
       <nav>
         <a href="index.html"><i data-lucide="home"></i>Home</a>
-        <a href="donationHistory.html"><i data-lucide="book-open"></i>History</a>
+        <a href="donationHistory.jsp"><i data-lucide="book-open"></i>History</a>
         <a href="causePage" class="active"><i data-lucide="heart"></i>Causes</a>
         <a href="admin-login.html" class="admin-login-btn"><i data-lucide="user-shield"></i>Login as Admin</a>
       </nav>

@@ -30,6 +30,6 @@ public class UpdateCauseStatusController extends HttpServlet {
         CauseDAO causeDAO = new CauseDAO();
 		causeDAO.updateCauseStatus(causeId, status);
 
-        response.sendRedirect("ListCauseController"); // or dashboard.jsp if you prefer
+        response.sendRedirect("Cause"); // or dashboard.jsp if you prefer
     }
 }
