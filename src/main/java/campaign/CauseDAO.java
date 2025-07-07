@@ -303,5 +303,49 @@ public class CauseDAO {
         return cause;
     }
 
+    public static String getCauseTitleById(String causeId) throws SQLException {
+        String title = "";
+        try (Connection conn = ConnectionManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT title FROM campaign WHERE campaignID = ?")) {
+            stmt.setString(1, causeId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                title = rs.getString("title");
+            }
+        }
+        return title;
+    }
+    
+    public static Cause getCauseById(String causeId) {
+        Cause cause = null;
+
+        try {
+            con = ConnectionManager.getConnection();
+            String sql = "SELECT * FROM campaign WHERE campaignID = ?";
+            ps = con.prepareStatement(sql);
+            ps.setString(1, causeId);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                cause = new Cause();
+                cause.setCauseId(rs.getString("campaignID"));
+                cause.setTitle(rs.getString("title"));
+                cause.setDescription(rs.getString("description"));
+                cause.setStartDate(rs.getDate("startDate"));
+                cause.setEndDate(rs.getDate("endDate"));
+                cause.setTargetAmount(rs.getDouble("targetAmount"));
+                cause.setThumbnail(rs.getString("thumbnail"));
+                cause.setStatus(rs.getString("status"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) {}
+            try { if (ps != null) ps.close(); } catch (Exception e) {}
+            try { if (con != null) con.close(); } catch (Exception e) {}
+        }
+
+        return cause;
+    }
 
    }

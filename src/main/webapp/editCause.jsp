@@ -119,7 +119,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary btn-block">Update Cause</button>
-        <a href="dashboard.jsp" class="btn btn-secondary btn-block">Cancel</a>
+        <a href="Cause" class="btn btn-secondary btn-block">Cancel</a>
     </form>
 </div>
 

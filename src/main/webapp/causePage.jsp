@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<!-- DONOR VIEW  
+ CC : NAWAL -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -210,52 +211,20 @@
    						 <button type="button" class="btn btn-primary open-donation-modal"data-title="${cause.title}" data-cause-id="${cause.causeId}">
            				 Donate Now
          				 </button>
+    						<!-- 📎 Copy link icon -->
+   						 <button type="button" class="btn btn-outline-secondary open-share-modal" 
+        					data-cause-id="${cause.causeId}">
+  						<i class="fa fa-link"></i>
+						</button>
+						<!-- debug -->
+					<div>${cause.causeId}</div>						
+					</div>      				 
    					 </div>
                 </div>
-            </div>
           </c:forEach>
         </div>
-    </div>
+        </div>
  </section>
-  
-
-   
-  <!-- ===== Make a Donation Section ===== -->
-  <!--  
-    <div data-scroll-index='1' class="make_donation_area section_padding">
-        <div class="container">
-            <div class="row justify-content-center">
-          <div class="col-lg-8">
-                    <div class="section_title text-center mb-55">
-                        <h3><span>Make a Donation</span></h3>
-                    </div>
-                </div>
-            </div>
-            
-        <form id="mainDonationForm" style="max-width:500px; margin:auto;">
-          <div class="form-group mb-3">
-            <label for="donationAmount"><b>Amount (RM)</b></label>
-            <div style="display:flex; gap:8px; margin-bottom:8px;">
-              <button type="button" class="btn btn-outline-primary preset-amount" data-amount="10" style="flex:1;">10</button>
-              <button type="button" class="btn btn-outline-primary preset-amount" data-amount="50" style="flex:1;">50</button>
-              <button type="button" class="btn btn-outline-primary preset-amount" data-amount="other" style="flex:1;">Other</button>
-            </div>
-            <input type="number" class="form-control" id="amount" name="amount" min="1" required placeholder="Enter amount">
-            </div>
-          <div class="form-group mb-3">
-            <label for="causeSelect"><b>Select Cause</b></label>
-            <select id="causeSelect" name="causeId" class="form-control" required>
-              <option value="">Choose a cause...</option>
- 			<c:forEach var="cause" items="${causeList}">
-   				 <option value="${cause.causeId}">${cause.title}</option>
-			</c:forEach>
-            </select>
-           </div>
-          <button type="button" id="openDonorModal" class="btn" style="background:#6C63FF; color:#fff; font-weight:700; border-radius:10px; padding:12px 32px; font-size:1.1em; width:100%;">Donate Now</button>
-        </form>
-       </div>
-    </div> -->
-
 
 
 	<!-- Donation Modal -->
@@ -282,13 +251,23 @@
       </div>
       <div class="form-group mb-3">
         <label>Phone</label>
-        <input type="tel" class="form-control" name="Dphone" required>
+        <input type="tel" class="form-control" name="Dphone" required pattern="[0-9]{10,15}" title="Enter a valid phone number (digits only, 10–15 digits)">
       </div>
+      
       <div class="form-group mb-3">
         <label>Amount (RM)</label>
         <input type="number" class="form-control" name="amount" required min="10">
       </div>
-
+		<div class="form-group mb-3">
+    <label>Payment Method</label>
+    <select class="form-select" name="paymentMethod" required>
+      <option value="">Select a method</option>
+      <option value="Credit Card">Credit Card</option>
+      <option value="Online Banking">Online Banking</option>
+      <option value="eWallet">eWallet</option>
+      <option value="Bank Transfer">Bank Transfer</option>
+    </select>
+  </div>
       <div class="form-group text-center">
         <button type="submit" class="btn btn-success">Donate</button>
       </div>
@@ -301,22 +280,27 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content" style="border-radius: 16px;">
       <div class="modal-header">
-        <h5 class="modal-title" id="thankYouModalLabel">Thank You!</h5>
+        <h5 class="modal-title" id="thankYouModalLabel">🎉 Thank You for Your Donation!</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background:none; border:none; font-size:1.5rem;">&times;</button>
       </div>
-      <div class="modal-body text-center">
-        <p class="mb-2">${success}</p>
-        <p>Your Reference ID:</p>
-        <div style="font-weight: bold; color: #6C63FF; font-size: 1.2rem;">${refId}</div>
-        <p style="font-size: 0.9rem; color: #777;">Please save this ID to track your donation.</p>
+       <div class="modal-body">
+        <p class="text-center">${success}</p>
+        <div style="padding: 10px 20px;">
+          <p><strong>Donor Name:</strong> ${donorName}</p>
+          <p><strong>Email:</strong> ${donorEmail}</p>
+          <p><strong>Campaign:</strong> ${causeTitle}</p>
+          <p><strong>Amount Donated:</strong> RM ${amount}</p>
+          <p><strong>Payment Method:</strong> ${paymentMethod}</p>
+          <p><strong>Reference ID:</strong> <span style="color: #6C63FF; font-weight: bold;">${refId}</span></p>
+        </div>
+        <p class="text-center" style="font-size: 0.9rem; color: #777;">Please save your reference ID for tracking purposes.</p>
       </div>
-      <div class="modal-footer justify-content-center">
+       <div class="modal-footer justify-content-center">
         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-      </div>
     </div>
   </div>
 </div>
-
+</div>
 
     <!-- footer_start  -->
     <footer class="footer">
@@ -447,7 +431,6 @@
     });
   </script>
 </c:if>
-
 
 </body>
 </html>

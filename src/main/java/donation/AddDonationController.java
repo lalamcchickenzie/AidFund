@@ -30,7 +30,9 @@ public class AddDonationController extends HttpServlet {
         String Dname = request.getParameter("Dname");
         String Demail = request.getParameter("Demail");
         String Dphone = request.getParameter("Dphone");
-        //double amount = Double.parseDouble(request.getParameter("amount"));
+        String paymentMethod = request.getParameter("paymentMethod");
+
+        
         String amountStr = request.getParameter("amount");
         double amount;
         if (amountStr == null || amountStr.trim().isEmpty()) {
@@ -54,6 +56,7 @@ public class AddDonationController extends HttpServlet {
             Donation donation = new Donation();
             donation.setDonationID(donationID);
             donation.setAmount(amount);
+            donation.setPaymentMethod(paymentMethod);
             donation.setCauseId(causeId);
             donation.setDonorID(donorID);
             donation.setDonationDate(new java.sql.Date(System.currentTimeMillis()));
@@ -64,6 +67,12 @@ public class AddDonationController extends HttpServlet {
             request.setAttribute("showThankYou", "true");
             request.setAttribute("refId", donationID);
             request.setAttribute("success", "Thank you for your donation!");
+            request.setAttribute("amount", amount);
+            request.setAttribute("donorName", Dname);
+            request.setAttribute("donorEmail", Demail);
+            request.setAttribute("paymentMethod", paymentMethod);
+            request.setAttribute("causeTitle", CauseDAO.getCauseTitleById(causeId)); 
+
            
 
          // Reload causes for the dropdown and cards

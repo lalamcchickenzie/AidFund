@@ -26,6 +26,7 @@ public class DonationDAO {
             d.setDonationID(rs.getString("donationID"));
             d.setAmount(rs.getDouble("amount"));
             d.setDonationDate(rs.getDate("donationDate"));
+            d.setPaymentMethod(rs.getString("paymentMethod"));
             d.setCauseId(rs.getString("campaignID"));
             d.setDonorID(rs.getInt("donorID"));
             donation.add(d);
@@ -39,7 +40,7 @@ public class DonationDAO {
 	
 	  public static void addDonation(Donation donations) throws SQLException {
 	      try {
-	          String query = "INSERT INTO donation(donationID, amount, donationDate, campaignID, donorID) VALUES (?, ?, ?, ?, ?)";
+	          String query = "INSERT INTO donation(donationID, amount, donationDate, paymentMethod, campaignID, donorID) VALUES (?, ?, ?, ?, ?, ?)";
 	          
 	          conn = ConnectionManager.getConnection();
 	          PreparedStatement stmt = conn.prepareStatement(query);
@@ -47,8 +48,9 @@ public class DonationDAO {
 	          stmt.setString(1, donations.getDonationID());
 	          stmt.setDouble(2, donations.getAmount());
 	          stmt.setDate(3, donations.getDonationDate());
-	          stmt.setString(4, donations.getCauseId());
-	          stmt.setInt(5, donations.getDonorID());
+	          stmt.setString(4, donations.getPaymentMethod());
+	          stmt.setString(5, donations.getCauseId());
+	          stmt.setInt(6, donations.getDonorID());
 	     
 	          
 	          stmt.executeUpdate();
@@ -77,6 +79,7 @@ public class DonationDAO {
 					d.setDonationID(rs.getString("donationID"));
 		            d.setAmount(rs.getDouble("amount"));
 		            d.setDonationDate(rs.getDate("donationDate"));
+		            d.setPaymentMethod(rs.getString("paymentMethod"));
 		            d.setCauseId(rs.getString("campaignID"));
 		            d.setDonorID(rs.getInt("donorId"));
 		         
@@ -126,6 +129,7 @@ public class DonationDAO {
 		            d.setDonationID(rs.getString("donationID"));
 		            d.setAmount(rs.getDouble("amount"));
 		            d.setDonationDate(rs.getDate("donationDate"));
+		            d.setPaymentMethod(rs.getString("paymentMethod"));
 		            d.setCauseId(rs.getString("campaignID"));
 		            d.setDonorID(rs.getInt("donorID"));
 		            list.add(d);
@@ -148,6 +152,7 @@ public class DonationDAO {
 		            d.setDonationID(rs.getString("donationID"));
 		            d.setAmount(rs.getDouble("amount"));
 		            d.setDonationDate(rs.getDate("donationDate"));
+		            d.setPaymentMethod(rs.getString("paymentMethod"));
 		            d.setCauseId(rs.getString("campaignID"));
 		            d.setDonorID(rs.getInt("donorID"));
 		            list.add(d);
@@ -156,5 +161,6 @@ public class DonationDAO {
 		    return list;
 		}
 
+	  
 
 }
